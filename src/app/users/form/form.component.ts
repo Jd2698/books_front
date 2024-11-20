@@ -1,5 +1,12 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,7 +23,9 @@ import { UsersService } from '../users.service';
   templateUrl: './form.component.html',
   styleUrl: './form.component.css',
 })
-export class FormComponent {
+export class FormComponent implements OnInit {
+  @Input() userSelected!: any;
+
   @Output() toggleDialog = new EventEmitter<void>();
   @Output() loadUsers = new EventEmitter<void>();
   @Output() showToast = new EventEmitter<{
@@ -25,6 +34,16 @@ export class FormComponent {
     details: string;
     life: number;
   }>();
+
+  ngOnInit(): void {
+    if (this.userSelected) {
+      this.formGroup.setValue({
+        name: this.userSelected.name,
+        email: this.userSelected.email,
+        telefono: this.userSelected.telefono,
+      });
+    }
+  }
 
   formGroup!: FormGroup;
 

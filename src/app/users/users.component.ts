@@ -34,9 +34,15 @@ export class UsersComponent implements OnInit {
 
   users: any;
   visible: boolean = false;
+  userSelected?: any;
 
   ngOnInit(): void {
     this.loadUsers();
+  }
+
+  setUserSelected(user: any) {
+    this.toggleDialog();
+    this.userSelected = user;
   }
 
   loadUsers(): void {
@@ -46,7 +52,8 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  toggleDialog() {
+  toggleDialog() {  
+    this.userSelected = undefined;
     this.visible = !this.visible;
   }
 
