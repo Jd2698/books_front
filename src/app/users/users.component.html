@@ -1,0 +1,52 @@
+<div class="flex justify-end mb-2">
+	<p-button (onClick)="showDialog()" label="create" severity="contrast" />
+</div>
+
+<p-table [value]="users">
+	<ng-template pTemplate="header">
+		<tr>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Phone</th>
+			<th>Actions</th>
+		</tr>
+	</ng-template>
+	<ng-template pTemplate="body" let-product>
+		<tr>
+			<td>{{ product.name }}</td>
+			<td>{{ product.email }}</td>
+			<td>{{ product.telefono || 'none' }}</td>
+			<td>acciones</td>
+		</tr>
+	</ng-template>
+</p-table>
+
+<p-dialog
+	header="Create user"
+	[modal]="true"
+	[(visible)]="visible"
+	[style]="{ width: '25rem' }"
+>
+	<span class="p-text-secondary block mb-5">Create a new user</span>
+
+	<div class="flex flex-col gap-1 mb-5">
+		<label for="name" class="w-16 block text-sm font-medium">Name</label>
+		<input id="name" class="p-2 border rounded flex-auto" autocomplete="off" />
+	</div>
+	<div class="flex flex-col gap-1 mb-5">
+		<label for="email" class="w-16 block text-sm font-medium">Email</label>
+		<input id="email" class="p-2 border rounded flex-auto" autocomplete="off" />
+	</div>
+	<div class="flex flex-col gap-1 mb-5">
+		<label for="telefono" class="w-16 block text-sm font-medium">Phone</label>
+		<input
+			id="telefono"
+			class="p-2 border rounded flex-auto"
+			autocomplete="off"
+		/>
+	</div>
+	<div class="flex justify-end gap-2">
+		<p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
+		<p-button label="Save" (onClick)="visible = false" />
+	</div>
+</p-dialog>

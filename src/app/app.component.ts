@@ -1,13 +1,21 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core'
+import { Router, RouterOutlet } from '@angular/router'
+import { MenubarModule } from 'primeng/menubar'
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+	selector: 'app-root',
+	standalone: true,
+	imports: [RouterOutlet, MenubarModule],
+	templateUrl: './app.component.html',
+	styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'app-books';
+	constructor(private _route: Router) {}
+	items = [
+		{
+			label: 'users',
+			icon: 'pi pi-users',
+			command: () => this._route.navigateByUrl('users')
+		}
+	]
 }
