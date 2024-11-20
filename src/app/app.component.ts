@@ -13,8 +13,8 @@ export class AppComponent {
 	constructor(private _route: Router) {}
 	items = [
 		{
-			label: 'users',
-			icon: 'pi pi-users',
+			label: 'users',	
+			icon: 'pi pi-users text-xl',
 			command: () => this._route.navigateByUrl('users')
 		}
 	]
