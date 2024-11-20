@@ -19,6 +19,12 @@ import { UsersService } from '../users.service';
 export class FormComponent {
   @Output() toggleDialog = new EventEmitter<void>();
   @Output() loadUsers = new EventEmitter<void>();
+  @Output() showToast = new EventEmitter<{
+    severity: string;
+    summary: string;
+    details: string;
+    life: number;
+  }>();
 
   formGroup!: FormGroup;
 
@@ -27,7 +33,6 @@ export class FormComponent {
   }
 
   private _userService = inject(UsersService);
-
   constructor(private _formBuild: FormBuilder) {
     this.formGroup = _formBuild.group({
       name: ['', Validators.required],
@@ -56,9 +61,22 @@ export class FormComponent {
       next: (response) => {
         this.resetFormGroup();
         this.loadUsers.emit();
+
+        this.showToast.emit({
+          severity: 'success',
+          summary: 'New user added',
+          details: 'The user has been added.',
+          life: 3000,
+        });
       },
       error: (error) => {
         console.error('Error fetching users', error);
+        this.showToast.emit({
+          severity: 'error',
+          summary: 'Error creating user.',
+          details: 'The user could not be created.',
+          life: 3000,
+        });
       },
     });
   }

@@ -1,4 +1,4 @@
-<p-toast />
+<p-toast [life]="5000" />
 
 <div class="flex justify-end mb-2">
 	<p-button (onClick)="toggleDialog()" label="create" class="bg-zinc-100 rounded px-4 py-2" />
@@ -35,5 +35,7 @@
 >
 	<span class="p-text-secondary block mb-5">Create a new user</span>
 
-	<app-form (toggleDialog)="toggleDialog()" (loadUsers)="loadUsers()"></app-form>
+	<ng-container *ngIf="visible">
+		<app-form (toggleDialog)="toggleDialog()" (loadUsers)="loadUsers()" (showToast)="showToast($event)"></app-form>
+	</ng-container>
 </p-dialog>

@@ -7,6 +7,7 @@ import { FormComponent } from './form/form.component';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-users',
@@ -18,6 +19,7 @@ import { ToastModule } from 'primeng/toast';
     FormComponent,
     ConfirmPopupModule,
     ToastModule,
+    NgIf,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
@@ -30,25 +32,8 @@ export class UsersComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
-  confirmDelete(event: Event, userId: number) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Do you want to delete this record?',
-      icon: 'pi pi-info-circle',
-      acceptButtonStyleClass: 'py-1 px-2 bg-red-700 text-white',
-      rejectButtonStyleClass: 'py-1 px-2',
-      accept: () => {
-        this.deleteUser(userId);
-      }
-    });
-  }
-
   users: any;
   visible: boolean = false;
-
-  toggleDialog() {
-    this.visible = !this.visible;
-  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -61,14 +46,45 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  toggleDialog() {
+    this.visible = !this.visible;
+  }
+
+  showToast(data: {
+    severity: string;
+    summary: string;
+    details: string;
+    life: number;
+  }) {
+    this.messageService.add({
+      severity: data.severity,
+      summary: data.summary,
+      detail: data.details,
+      life: data.life,
+    });
+  }
+
+  confirmDelete(event: Event, userId: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to delete this record?',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'py-1 px-2 bg-red-700 text-white',
+      rejectButtonStyleClass: 'py-1 px-2',
+      accept: () => {
+        this.deleteUser(userId);
+      },
+    });
+  }
+
   deleteUser(id: number) {
     this._userService.delete(id).subscribe({
       next: (response) => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Confirmed',
-          detail: 'Record deleted',
-          life: 3000,
+        this.showToast({
+          severity: 'success',
+          summary: 'User removed',
+          details: 'The user has been removed.',
+          life: 4000,
         });
         this.loadUsers();
       },
