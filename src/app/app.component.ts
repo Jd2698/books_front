@@ -14,8 +14,13 @@ export class AppComponent {
 	items = [
 		{
 			label: 'users',	
-			icon: 'pi pi-users text-xl',
+			icon: 'pi pi-users text-3xl',
 			command: () => this._route.navigateByUrl('users')
-		}
+		},
+		{
+			label: 'loans',	
+			icon: 'pi pi-clipboard text-3xl',
+			command: () => this._route.navigateByUrl('loans')
+		},
 	]
 }

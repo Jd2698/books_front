@@ -14,7 +14,7 @@ import {
 	Validators
 } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
-import { UsersService } from '../users.service'
+import { UsersService } from '../services/users.service'
 import { noWhitespaceValidator } from '../../shared/whitespace.validator'
 
 @Component({
