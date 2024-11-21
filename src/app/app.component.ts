@@ -16,6 +16,10 @@ export class AppComponent {
 			label: 'users',	
 			icon: 'pi pi-users text-xl',
 			command: () => this._route.navigateByUrl('users')
+		},{
+			label: 'books',	
+			icon: 'pi pi-book text-xl',
+			command: () => this._route.navigateByUrl('books')
 		}
 	]
 }
