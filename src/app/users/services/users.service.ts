@@ -9,19 +9,19 @@ export class UsersService {
 	constructor(private _http: HttpClient) {}
 	urlPath: string = 'http://localhost:3000/users'
 
-	getAll(): Observable<any> {
-		return this._http.get(this.urlPath)
+	getAll(): Observable<Iuser[]> {
+		return this._http.get<Iuser[]>(this.urlPath)
 	}
 
-	create(data: Iuser): Observable<any> {
-		return this._http.post(this.urlPath, data)
+	create(data: Iuser): Observable<Iuser> {
+		return this._http.post<Iuser>(this.urlPath, data)
 	}
 
-	delete(userId: number): Observable<any> {
-		return this._http.delete(`${this.urlPath}/${userId}`)
+	delete(userId: number): Observable<Iuser> {
+		return this._http.delete<Iuser>(`${this.urlPath}/${userId}`)
 	}
 
-	update(userId: number, data: Iuser): Observable<any> {
-		return this._http.put(`${this.urlPath}/${userId}`, data)
+	update(userId: number, data: Iuser): Observable<Iuser> {
+		return this._http.put<Iuser>(`${this.urlPath}/${userId}`, data)
 	}
 }

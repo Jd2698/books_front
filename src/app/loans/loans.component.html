@@ -3,21 +3,45 @@
 
 <div class="flex justify-end mb-2">
 	<p-button
-		(onClick)="toggleDialog()"
+		(onClick)="toggleModalVisibility()"
 		label="create"
 		styleClass="bg-zinc-100 rounded px-4 py-2"
 	/>
 </div>
 
-<p-table [value]="loans" styleClass="text-sm">
+<p-table
+	#dt2
+	[value]="loans"
+	[paginator]="true"
+	[rows]="7"
+	[rowsPerPageOptions]="[7, 20]"
+	[globalFilterFields]="['libro.titulo', 'usuario.name', 'usuario.email', 'fechaPrestamo', 'fechaDevolucion']"
+	styleClass="text-sm"
+>
+	<ng-template pTemplate="caption">
+		<div class="flex justify-end">
+			<p-inputIcon class="bg-white p-2">
+				<i class="pi pi-search"></i>
+			</p-inputIcon>
+			<input
+				pInputText
+				[(ngModel)]="searchKeyword"
+				type="text"
+				(input)="dt2.filterGlobal(searchKeyword, 'contains')"
+				placeholder="Search keyword"
+				class="p-2 rounded outline-none"
+			/>
+		</div>
+	</ng-template>
+
 	<ng-template pTemplate="header">
 		<tr>
-			<th>Book</th>
-			<th>User</th>
-			<th>User email</th>
-			<th>LoanDate</th>
-			<th>ReturnDate</th>
-			<th>Returned</th>
+			<th pSortableColumn="libro.titulo">Book</th>
+			<th pSortableColumn="usuario.name">User</th>
+			<th pSortableColumn="usuario.email">User email</th>
+			<th pSortableColumn="fechaPrestamo">LoanDate</th>
+			<th pSortableColumn="fechaDevolucion">ReturnDate</th>
+			<th pSortableColumn="entregado">Returned</th>
 			<th>Actions</th>
 		</tr>
 	</ng-template>
@@ -28,11 +52,11 @@
 			<td>{{ loan.usuario.email }}</td>
 			<td>{{ loan.fechaPrestamo | date }}</td>
 			<td>{{ loan.fechaDevolucion | date }}</td>
-			<td>{{ loan.entregado? true : false }}</td>
+			<td>{{ loan.entregado? 'yes' : 'no' }}</td>
 			<td class="flex gap-2">
 				<p-confirmPopup />
 				<p-button
-					(onClick)="setLoanSelected(loan)"
+					(onClick)="setselectedLoan(loan)"
 					label="edit"
 					styleClass="bg-zinc-100 rounded px-4 py-2"
 				/>
@@ -44,22 +68,28 @@
 			</td>
 		</tr>
 	</ng-template>
+
+	<ng-template pTemplate="emptymessage">
+		<tr>
+			<td colspan="5">No loans found.</td>
+		</tr>
+	</ng-template>
 </p-table>
 
 <p-dialog
 	[header]="'Create a new loan'"
 	draggable="false"
 	[modal]="true"
-	[(visible)]="visible"
+	[(visible)]="isModalVisible"
 	[style]="{ width: '25rem' }"
 >
 	<span class="p-text-secondary block mb-5">{{'Create a new loan'}}</span>
 
-	<ng-container *ngIf="visible">
+	<ng-container *ngIf="isModalVisible">
 		<app-form
-			[loanSelected]="loanSelected"
-			(toggleDialog)="toggleDialog()"
-			(loadLoans)="loadLoans()"
+			[selectedLoan]="selectedLoan"
+			(toggleModalVisibility)="toggleModalVisibility()"
+			(refreshLoans)="loadLoans()"
 			(showToast)="showToast($event)"
 		></app-form>
 	</ng-container>

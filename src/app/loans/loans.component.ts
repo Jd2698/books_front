@@ -9,6 +9,8 @@ import { FormComponent } from './form/form.component'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
 import { Iloan } from './model/loan.model'
+import { FormsModule } from '@angular/forms'
+import { InputIconModule } from 'primeng/inputicon'
 
 @Component({
 	selector: 'app-loans',
@@ -21,16 +23,18 @@ import { Iloan } from './model/loan.model'
 		FormComponent,
 		ConfirmPopupModule,
 		ToastModule,
-		NgIf
+		NgIf,
+		FormsModule,
+		InputIconModule
 	],
 	templateUrl: './loans.component.html',
 	styleUrl: './loans.component.css'
 })
 export class LoansComponent implements OnInit {
-	//
+	searchKeyword = ''
 	loans!: Iloan[]
-	visible: boolean = false
-	loanSelected?: Iloan
+	isModalVisible: boolean = false
+	selectedLoan?: Iloan
 
 	private _loanService = inject(LoansService)
 	private _confirmationService = inject(ConfirmationService)
@@ -47,17 +51,17 @@ export class LoansComponent implements OnInit {
 		})
 	}
 
-	setLoanSelected(loan: Iloan) {
-		this.toggleDialog()
-		this.loanSelected = loan
+	setselectedLoan(loan: Iloan): void {
+		this.toggleModalVisibility()
+		this.selectedLoan = loan
 	}
 
-	toggleDialog() {
-		this.loanSelected = undefined
-		this.visible = !this.visible
+	toggleModalVisibility(): void {
+		this.selectedLoan = undefined
+		this.isModalVisible = !this.isModalVisible
 	}
 
-	confirmDelete(event: Event, loanId: number) {
+	confirmDelete(event: Event, loanId: number): void {
 		this._confirmationService.confirm({
 			target: event.target as EventTarget,
 			message: 'Do you want to delete this record?',
@@ -67,20 +71,6 @@ export class LoansComponent implements OnInit {
 			accept: () => {
 				this.deleteLoan(loanId)
 			}
-		})
-	}
-
-	showToast(data: {
-		severity: string
-		summary: string
-		details: string
-		life: number
-	}) {
-		this._messageService.add({
-			severity: data.severity,
-			summary: data.summary,
-			detail: data.details,
-			life: data.life
 		})
 	}
 
@@ -96,6 +86,20 @@ export class LoansComponent implements OnInit {
 				this.loadLoans()
 			},
 			error: error => console.log('Error deleting user', error)
+		})
+	}
+
+	showToast(data: {
+		severity: string
+		summary: string
+		details: string
+		life: number
+	}) {
+		this._messageService.add({
+			severity: data.severity,
+			summary: data.summary,
+			detail: data.details,
+			life: data.life
 		})
 	}
 }

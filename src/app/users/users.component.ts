@@ -9,6 +9,8 @@ import { ConfirmationService, MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
 import { NgIf } from '@angular/common'
 import { Iuser } from './model/user.model'
+import { FormsModule } from '@angular/forms'
+import { InputIconModule } from 'primeng/inputicon'
 
 @Component({
 	selector: 'app-users',
@@ -20,60 +22,48 @@ import { Iuser } from './model/user.model'
 		FormComponent,
 		ConfirmPopupModule,
 		ToastModule,
-		NgIf
+		NgIf,
+		FormsModule,
+		InputIconModule
 	],
 	templateUrl: './users.component.html',
 	styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit {
-	//
 	constructor(
 		private _userService: UsersService,
-		private confirmationService: ConfirmationService,
-		private messageService: MessageService
+		private _confirmationService: ConfirmationService,
+		private _messageService: MessageService
 	) {}
 
+	searchKeyword = ''
 	users!: Iuser[]
-	visible: boolean = false
-	userSelected?: any
+	isModalVisible: boolean = false
+	selectedUser?: any
 
 	ngOnInit(): void {
 		this.loadUsers()
 	}
 
-	setUserSelected(user: Iuser) {
-		this.toggleDialog()
-		this.userSelected = user
-	}
-
 	loadUsers(): void {
 		this._userService.getAll().subscribe({
-			next: response => (this.users = response),
-			error: error => console.log('Error getting users', error)
+			next: (response: Iuser[]) => (this.users = response),
+			error: error => console.log('Error fetching  users', error)
 		})
 	}
 
-	toggleDialog() {
-		this.userSelected = undefined
-		this.visible = !this.visible
+	toggleModalVisibility(): void {
+		this.selectedUser = undefined
+		this.isModalVisible = !this.isModalVisible
 	}
 
-	showToast(data: {
-		severity: string
-		summary: string
-		details: string
-		life: number
-	}) {
-		this.messageService.add({
-			severity: data.severity,
-			summary: data.summary,
-			detail: data.details,
-			life: data.life
-		})
+	setSelectedUser(user: Iuser): void {
+		this.toggleModalVisibility()
+		this.selectedUser = user
 	}
 
-	confirmDelete(event: Event, userId: number) {
-		this.confirmationService.confirm({
+	confirmDelete(event: Event, userId: number): void {
+		this._confirmationService.confirm({
 			target: event.target as EventTarget,
 			message: 'Do you want to delete this record?',
 			icon: 'pi pi-info-circle',
@@ -85,7 +75,7 @@ export class UsersComponent implements OnInit {
 		})
 	}
 
-	deleteUser(id: number) {
+	deleteUser(id: number): void {
 		this._userService.delete(id).subscribe({
 			next: response => {
 				this.showToast({
@@ -97,6 +87,20 @@ export class UsersComponent implements OnInit {
 				this.loadUsers()
 			},
 			error: error => console.log('Error deleting user', error)
+		})
+	}
+
+	showToast(data: {
+		severity: string
+		summary: string
+		details: string
+		life: number
+	}) {
+		this._messageService.add({
+			severity: data.severity,
+			summary: data.summary,
+			detail: data.details,
+			life: data.life
 		})
 	}
 }

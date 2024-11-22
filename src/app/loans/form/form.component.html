@@ -1,11 +1,11 @@
 <form [formGroup]="formGroup">
-	<ng-container *ngIf="loanSelected">
+	<ng-container *ngIf="selectedLoan">
 		<div class="flex flex-col gap-1 mb-5">
 			<p-dropdown
 				placeholder="Has been returned"
 				formControlName="entregado"
 				appendTo="body"
-				[options]="[{'name': 'yes', 'value': 1}, {'name': 'no', 'value': 0}]"
+				[options]="returnedOptions"
 				optionLabel="name"
 				optionValue="value"
 				[showClear]="true"
@@ -16,9 +16,9 @@
 						<div>{{ selectedOption.name }}</div>
 					</div>
 				</ng-template>
-				<ng-template let-user pTemplate="item">
+				<ng-template let-returned pTemplate="item">
 					<div class="flex align-items-center gap-2">
-						<div>{{ user.name }}</div>
+						<div>{{ returned.name }}</div>
 					</div>
 				</ng-template>
 			</p-dropdown>
@@ -32,11 +32,11 @@
 		</div>
 	</ng-container>
 
-	<ng-container *ngIf="!loanSelected">
+	<ng-container *ngIf="!selectedLoan">
 		<!-- usuarioId -->
 		<div class="flex flex-col gap-1 mb-5">
 			<p-dropdown
-				placeholder="Select a User"
+				placeholder="Select an user"
 				formControlName="usuarioId"
 				appendTo="body"
 				[options]="users"
@@ -70,12 +70,13 @@
 		<!-- libroId -->
 		<div class="flex flex-col gap-1 mb-5">
 			<p-dropdown
-				placeholder="Select a User"
+				placeholder="Select a book"
 				formControlName="libroId"
 				appendTo="body"
 				[options]="books"
 				optionLabel="titulo"
 				optionValue="id"
+				optionDisabled="deshabilitar"
 				[filter]="true"
 				filterBy="titulo"
 				[showClear]="true"
@@ -110,7 +111,7 @@
 				readonlyInput="true"
 				inputStyleClass="w-full border p-3"
 				styleClass="w-full"
-				[minDate]="minDate"
+				[minDate]="minLoanDate"
 				dateFormat="yy-mm-dd"
 			/>
 			<span
@@ -147,12 +148,12 @@
 		<p-button
 			label="Cancel"
 			severity="secondary"
-			(onClick)="runDialogEmitter()"
+			(onClick)="emitModalToggle()"
 		/>
 		<p-button
 			label="Save"
 			(onClick)="submit()"
-			[disabled]="loanSelected? !formGroup.dirty || formGroup.invalid : formGroup.invalid"
+			[disabled]="selectedLoan? !formGroup.dirty || formGroup.invalid : formGroup.invalid"
 		/>
 	</div>
 </form>

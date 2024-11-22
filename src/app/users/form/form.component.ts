@@ -1,4 +1,4 @@
-import { NgClass, NgIf } from '@angular/common'
+import { NgIf } from '@angular/common'
 import {
 	Component,
 	EventEmitter,
@@ -26,10 +26,10 @@ import { Iuser } from '../model/user.model'
 	styleUrl: './form.component.css'
 })
 export class FormComponent implements OnInit {
-	@Input() userSelected!: Iuser
+	@Input() selectedUser!: Iuser
 
-	@Output() toggleDialog = new EventEmitter<void>()
-	@Output() loadUsers = new EventEmitter<void>()
+	@Output() toggleModalVisibility = new EventEmitter<void>()
+	@Output() refreshUsers = new EventEmitter<void>()
 	@Output() showToast = new EventEmitter<{
 		severity: string
 		summary: string
@@ -42,18 +42,18 @@ export class FormComponent implements OnInit {
 	private _formBuild = inject(FormBuilder)
 
 	ngOnInit(): void {
-		this.setFormGroup()
+		this.initializeForm()
 
-		if (this.userSelected) {
+		if (this.selectedUser) {
 			this.formGroup.setValue({
-				name: this.userSelected.name,
-				email: this.userSelected.email,
-				telefono: this.userSelected.telefono
+				name: this.selectedUser.name,
+				email: this.selectedUser.email,
+				telefono: this.selectedUser.telefono
 			})
 		}
 	}
 
-	setFormGroup() {
+	initializeForm(): void {
 		this.formGroup = this._formBuild.group({
 			name: ['', [Validators.required, noWhitespaceValidator()]],
 			email: ['', [Validators.required, Validators.email]],
@@ -61,17 +61,17 @@ export class FormComponent implements OnInit {
 		})
 	}
 
-	runDialogEmitter() {
-		this.toggleDialog.emit()
+	emitModalToggle(): void {
+		this.toggleModalVisibility.emit()
 	}
 
-	hasError(data: { field: string; error: string }) {
+	hasError(data: { field: string; error: string }): boolean {
 		const control = this.formGroup.controls[data.field]
 
 		const error = control.errors?.[data.error]
-		const isTouched = control.touched || control.dirty
+		const isTouchedOrDirty = control.touched || control.dirty
 
-		return error && isTouched
+		return error && isTouchedOrDirty
 	}
 
 	resetFormGroup(): void {
@@ -80,14 +80,14 @@ export class FormComponent implements OnInit {
 
 	submit(): void {
 		const telefono = this.formGroup.controls['telefono'].value.trim() || null
-		const data = { ...this.userSelected, ...this.formGroup.value, telefono }
+		const data = { ...this.selectedUser, ...this.formGroup.value, telefono }
 
 		//para actualizar y crear
-		if (this.userSelected) {
-			this._userService.update(this.userSelected.id, data).subscribe({
+		if (this.selectedUser) {
+			this._userService.update(this.selectedUser.id, data).subscribe({
 				next: response => {
 					this.resetFormGroup()
-					this.loadUsers.emit()
+					this.refreshUsers.emit()
 
 					this.showToast.emit({
 						severity: 'success',
@@ -110,7 +110,7 @@ export class FormComponent implements OnInit {
 			this._userService.create(data).subscribe({
 				next: response => {
 					this.resetFormGroup()
-					this.loadUsers.emit()
+					this.refreshUsers.emit()
 
 					this.showToast.emit({
 						severity: 'success',

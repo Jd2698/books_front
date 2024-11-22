@@ -54,12 +54,12 @@
 		<p-button
 			label="Cancel"
 			severity="secondary"
-			(onClick)="runDialogEmitter()"
+			(onClick)="emitModalToggle()"
 		/>
 		<p-button
 			label="Save"
 			(onClick)="submit()"
-			[disabled]="userSelected? !formGroup.dirty || formGroup.invalid : formGroup.invalid"
+			[disabled]="selectedUser? !formGroup.dirty || formGroup.invalid : formGroup.invalid"
 		/>
 	</div>
 </form>

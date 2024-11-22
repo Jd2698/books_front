@@ -1,4 +1,4 @@
-import { DatePipe, NgClass, NgIf } from '@angular/common'
+import { NgIf } from '@angular/common'
 import {
 	Component,
 	EventEmitter,
@@ -14,22 +14,29 @@ import {
 	Validators
 } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
-import { noWhitespaceValidator } from '../../shared/whitespace.validator'
-import { BooksService } from '../books.service'
+import { BooksService } from '../services/books.service'
 import { InputTextareaModule } from 'primeng/inputtextarea'
+import { Ibook } from '../model/book.model'
+import { CalendarModule } from 'primeng/calendar'
 
 @Component({
 	selector: 'app-book-form',
 	standalone: true,
-	imports: [ButtonModule, ReactiveFormsModule, NgIf, InputTextareaModule],
+	imports: [
+		ButtonModule,
+		ReactiveFormsModule,
+		NgIf,
+		InputTextareaModule,
+		CalendarModule
+	],
 	templateUrl: './book-form.component.html',
 	styleUrl: './book-form.component.css'
 })
 export class BookFormComponent implements OnInit {
-	@Input() bookSelected!: any
+	@Input() selectedBook?: Ibook
 
-	@Output() toggleDialog = new EventEmitter<void>()
-	@Output() loadBooks = new EventEmitter<void>()
+	@Output() toggleModalVisibility = new EventEmitter<void>()
+	@Output() refreshBooks = new EventEmitter<void>()
 	@Output() showToast = new EventEmitter<{
 		severity: string
 		summary: string
@@ -39,65 +46,63 @@ export class BookFormComponent implements OnInit {
 
 	formGroup!: FormGroup
 	private _booksService = inject(BooksService)
+
 	constructor(private _formBuild: FormBuilder) {
 		this.formGroup = _formBuild.group({
 			titulo: ['', [Validators.required]],
 			fechaPublicacion: ['', [Validators.required]],
 			genero: ['', Validators.required],
 			numPaginas: [null, [Validators.required, Validators.min(0)]],
-			resumen: ['', Validators.required],
+			resumen: [null],
 			autor: ['', Validators.required],
 			stock_disponible: [null, [Validators.required, Validators.min(0)]]
 		})
 	}
 
 	ngOnInit(): void {
-		if (this.bookSelected) {
+		if (this.selectedBook) {
+			console.log(this.selectedBook)
+
 			this.formGroup.setValue({
-				titulo: this.bookSelected.titulo,
-				fechaPublicacion: this.bookSelected.fechaPublicacion,
-				genero: this.bookSelected.genero,
-				numPaginas: this.bookSelected.numPaginas,
-				resumen: this.bookSelected.resumen,
-				autor: this.bookSelected.autor,
-				stock_disponible: this.bookSelected.stock_disponible
+				titulo: this.selectedBook.titulo,
+				fechaPublicacion: this.selectedBook.fechaPublicacion
+					.toString()
+					.split('T')[0],
+				genero: this.selectedBook.genero,
+				numPaginas: this.selectedBook.numPaginas,
+				resumen: this.selectedBook.resumen,
+				autor: this.selectedBook.autor,
+				stock_disponible: this.selectedBook.stock_disponible
 			})
 		}
 	}
 
-	runDialogEmitter() {
-		this.toggleDialog.emit()
+	emitModalToggle() {
+		this.toggleModalVisibility.emit()
 	}
 
 	hasError(data: { field: string; error: string }) {
 		const control = this.formGroup.controls[data.field]
 
 		const error = control.errors?.[data.error]
-		const isTouched = control.touched || control.dirty
+		const isTouchedOrDirty = control.touched || control.dirty
 
-		return error && isTouched
+		return error && isTouchedOrDirty
 	}
 
 	resetFormGroup(): void {
 		this.formGroup.reset()
 	}
-	formatDate() {
-		const control = this.formGroup.get('fechaPublicacion')
-		if (control?.value) {
-			const formatted = new Date(control.value)
-			control.setValue(formatted.toISOString())
-		}
-	}
 
 	submit(): void {
 		//para actualizar y crear
-		if (this.bookSelected) {
+		if (this.selectedBook) {
 			this._booksService
-				.update(this.bookSelected.id, this.formGroup.value)
+				.update(this.selectedBook.id, this.formGroup.value)
 				.subscribe({
 					next: response => {
 						this.resetFormGroup()
-						this.loadBooks.emit()
+						this.refreshBooks.emit()
 						this.showToast.emit({
 							severity: 'success',
 							summary: 'Book updated',
@@ -119,7 +124,7 @@ export class BookFormComponent implements OnInit {
 			this._booksService.create(this.formGroup.value).subscribe({
 				next: response => {
 					this.resetFormGroup()
-					this.loadBooks.emit()
+					this.refreshBooks.emit()
 
 					this.showToast.emit({
 						severity: 'success',
@@ -138,6 +143,14 @@ export class BookFormComponent implements OnInit {
 					})
 				}
 			})
+		}
+	}
+
+	formatDate() {
+		const control = this.formGroup.get('fechaPublicacion')
+		if (control?.value) {
+			const formatted = new Date(control.value)
+			control.setValue(formatted.toISOString())
 		}
 	}
 }
