@@ -16,6 +16,7 @@ import {
 import { ButtonModule } from 'primeng/button'
 import { UsersService } from '../services/users.service'
 import { noWhitespaceValidator } from '../../shared/whitespace.validator'
+import { Iuser } from '../model/user.model'
 
 @Component({
 	selector: 'app-form',
@@ -25,7 +26,7 @@ import { noWhitespaceValidator } from '../../shared/whitespace.validator'
 	styleUrl: './form.component.css'
 })
 export class FormComponent implements OnInit {
-	@Input() userSelected!: any
+	@Input() userSelected!: Iuser
 
 	@Output() toggleDialog = new EventEmitter<void>()
 	@Output() loadUsers = new EventEmitter<void>()
@@ -38,15 +39,11 @@ export class FormComponent implements OnInit {
 
 	formGroup!: FormGroup
 	private _userService = inject(UsersService)
-	constructor(private _formBuild: FormBuilder) {
-		this.formGroup = _formBuild.group({
-			name: ['', [Validators.required, noWhitespaceValidator()]],
-			email: ['', [Validators.required, Validators.email]],
-			telefono: [null, Validators.pattern(/^\d{10}$/)]
-		})
-	}
+	private _formBuild = inject(FormBuilder)
 
 	ngOnInit(): void {
+		this.setFormGroup()
+
 		if (this.userSelected) {
 			this.formGroup.setValue({
 				name: this.userSelected.name,
@@ -54,6 +51,14 @@ export class FormComponent implements OnInit {
 				telefono: this.userSelected.telefono
 			})
 		}
+	}
+
+	setFormGroup() {
+		this.formGroup = this._formBuild.group({
+			name: ['', [Validators.required, noWhitespaceValidator()]],
+			email: ['', [Validators.required, Validators.email]],
+			telefono: [null, Validators.pattern(/^\d{10}$/)]
+		})
 	}
 
 	runDialogEmitter() {

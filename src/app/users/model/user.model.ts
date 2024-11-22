@@ -1,5 +1,5 @@
-export interface userModel {
-  id: string;
+export interface Iuser {
+  id: number;
   name: string;
   email: string;
   telefono?: number;

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
+import { Iloan } from '../model/loan.model'
 
 @Injectable({
 	providedIn: 'root'
@@ -13,15 +14,15 @@ export class LoansService {
 		return this._http.get(this.urlPath)
 	}
 
-	create(data: any): Observable<any> {
+	create(data: Iloan): Observable<any> {
 		return this._http.post(this.urlPath, data)
 	}
 
-	// delete(userId: number): Observable<any> {
-	// 	return this._http.delete(`${this.urlPath}/${userId}`)
-	// }
+	delete(loanId: number): Observable<any> {
+		return this._http.delete(`${this.urlPath}/${loanId}`)
+	}
 
-	// update(userId: number, data: any): Observable<any> {
-	// 	return this._http.put(`${this.urlPath}/${userId}`, data)
-	// }
+	update(loanId: number, data: Iloan): Observable<any> {
+		return this._http.put(`${this.urlPath}/${loanId}`, data)
+	}
 }

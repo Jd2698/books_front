@@ -1,60 +1,158 @@
 <form [formGroup]="formGroup">
-	<div class="flex flex-col gap-1 mb-5">
-		<p-dropdown
-			placeholder="Select a User"
-			formControlName="usuarioId"
-			appendTo="body"
-			[options]="users"
-			optionLabel="name"
-			optionValue="id"
-			[filter]="true"
-			filterBy="name"
-			[showClear]="true"
-			styleClass="w-full border"
-		>
-			<ng-template pTemplate="selectedItem" let-selectedOption>
-				<div class="flex align-items-center gap-2">
-					<div>{{ selectedOption.name }}</div>
-				</div>
-			</ng-template>
-			<ng-template let-user pTemplate="item">
-				<div class="flex align-items-center gap-2">
-					<div>{{ user.name }}</div>
-				</div>
-			</ng-template>
-		</p-dropdown>
-	</div>
-	<div class="flex flex-col gap-1 mb-5">
-		<p-calendar
-			placeholder="loan Date"
-			formControlName="fechaPrestamo"
-			appendTo="body"
-			readonlyInput="true"
-			inputStyleClass="w-full border p-3"
-			styleClass="w-full"
-			[minDate]="minDate"
-		/>
-	</div>
+	<ng-container *ngIf="loanSelected">
+		<div class="flex flex-col gap-1 mb-5">
+			<p-dropdown
+				placeholder="Has been returned"
+				formControlName="entregado"
+				appendTo="body"
+				[options]="[{'name': 'yes', 'value': 1}, {'name': 'no', 'value': 0}]"
+				optionLabel="name"
+				optionValue="value"
+				[showClear]="true"
+				styleClass="w-full border"
+			>
+				<ng-template pTemplate="selectedItem" let-selectedOption>
+					<div class="flex align-items-center gap-2">
+						<div>{{ selectedOption.name }}</div>
+					</div>
+				</ng-template>
+				<ng-template let-user pTemplate="item">
+					<div class="flex align-items-center gap-2">
+						<div>{{ user.name }}</div>
+					</div>
+				</ng-template>
+			</p-dropdown>
 
-	<span class="hidden h-28"></span>
-	<div class="flex flex-col gap-1 mb-5">
-		<p-calendar
-			appendTo="body"
-			readonlyInput="true"
-			formControlName="fechaDevolucion"
-			placeholder="return Date"
-			styleClass="w-full"
-			panelStyleClass="!text-xs"
-			inputStyleClass="w-full border p-3"
-			[minDate]="minDate"
-		/>
-	</div>
+			<span
+				*ngIf="hasError({field: 'usuarioId', error: 'required'}) || hasError({field: 'usuarioId', error: 'whitespace'})"
+				class="text-red-700 ml-1"
+			>
+				Field user is required
+			</span>
+		</div>
+	</ng-container>
+
+	<ng-container *ngIf="!loanSelected">
+		<!-- usuarioId -->
+		<div class="flex flex-col gap-1 mb-5">
+			<p-dropdown
+				placeholder="Select a User"
+				formControlName="usuarioId"
+				appendTo="body"
+				[options]="users"
+				optionLabel="name"
+				optionValue="id"
+				[filter]="true"
+				filterBy="name"
+				[showClear]="true"
+				styleClass="w-full border"
+			>
+				<ng-template pTemplate="selectedItem" let-selectedOption>
+					<div class="flex align-items-center gap-2">
+						<div>{{ selectedOption.name }}</div>
+					</div>
+				</ng-template>
+				<ng-template let-user pTemplate="item">
+					<div class="flex align-items-center gap-2">
+						<div>{{ user.name }}</div>
+					</div>
+				</ng-template>
+			</p-dropdown>
+
+			<span
+				*ngIf="hasError({field: 'usuarioId', error: 'required'}) || hasError({field: 'usuarioId', error: 'whitespace'})"
+				class="text-red-700 ml-1"
+			>
+				Field user is required
+			</span>
+		</div>
+
+		<!-- libroId -->
+		<div class="flex flex-col gap-1 mb-5">
+			<p-dropdown
+				placeholder="Select a User"
+				formControlName="libroId"
+				appendTo="body"
+				[options]="books"
+				optionLabel="titulo"
+				optionValue="id"
+				[filter]="true"
+				filterBy="titulo"
+				[showClear]="true"
+				styleClass="w-full border"
+			>
+				<ng-template pTemplate="selectedItem" let-selectedOption>
+					<div class="flex align-items-center gap-2">
+						<div>{{ selectedOption.titulo }}</div>
+					</div>
+				</ng-template>
+				<ng-template let-book pTemplate="item">
+					<div class="flex align-items-center gap-2">
+						<div>{{ book.titulo }}</div>
+					</div>
+				</ng-template>
+			</p-dropdown>
+
+			<span
+				*ngIf="hasError({field: 'libroId', error: 'required'}) || hasError({field: 'libroId', error: 'whitespace'})"
+				class="text-red-700 ml-1"
+			>
+				Field book is required
+			</span>
+		</div>
+
+		<!-- fechaPrestamo -->
+		<div class="flex flex-col gap-1 mb-5">
+			<p-calendar
+				placeholder="loan Date"
+				formControlName="fechaPrestamo"
+				appendTo="body"
+				readonlyInput="true"
+				inputStyleClass="w-full border p-3"
+				styleClass="w-full"
+				[minDate]="minDate"
+				dateFormat="yy-mm-dd"
+			/>
+			<span
+				*ngIf="hasError({field: 'fechaPrestamo', error: 'required'}) || hasError({field: 'fechaPrestamo', error: 'whitespace'})"
+				class="text-red-700 ml-1"
+			>
+				Field loan Date is required
+			</span>
+		</div>
+
+		<!-- fechaDevuelto -->
+		<div class="flex flex-col gap-1 mb-5">
+			<p-calendar
+				appendTo="body"
+				readonlyInput="true"
+				formControlName="fechaDevolucion"
+				placeholder="return Date"
+				styleClass="w-full"
+				panelStyleClass="!text-xs"
+				inputStyleClass="w-full border p-3"
+				[minDate]="LoanDate"
+				dateFormat="yy-mm-dd"
+			/>
+			<span
+				*ngIf="hasError({field: 'fechaDevolucion', error: 'required'}) || hasError({field: 'fechaDevolucion', error: 'whitespace'})"
+				class="text-red-700 ml-1"
+			>
+				Field return Date is required
+			</span>
+		</div>
+	</ng-container>
+
 	<div class="flex justify-end gap-2 pt-4">
-		<p-button label="Cancel" severity="secondary" />
+		<p-button
+			label="Cancel"
+			severity="secondary"
+			(onClick)="runDialogEmitter()"
+		/>
 		<p-button
 			label="Save"
 			(onClick)="submit()"
-			[disabled]="formGroup.invalid"
+			[disabled]="loanSelected? !formGroup.dirty || formGroup.invalid : formGroup.invalid"
 		/>
 	</div>
 </form>

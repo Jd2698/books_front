@@ -16,7 +16,7 @@ import {
 import { ButtonModule } from 'primeng/button'
 import { noWhitespaceValidator } from '../../shared/whitespace.validator'
 import { BooksService } from '../books.service'
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextareaModule } from 'primeng/inputtextarea'
 
 @Component({
 	selector: 'app-book-form',
@@ -39,9 +39,7 @@ export class BookFormComponent implements OnInit {
 
 	formGroup!: FormGroup
 	private _booksService = inject(BooksService)
-	constructor(
-		private _formBuild: FormBuilder,
-	) {
+	constructor(private _formBuild: FormBuilder) {
 		this.formGroup = _formBuild.group({
 			titulo: ['', [Validators.required]],
 			fechaPublicacion: ['', [Validators.required]],
@@ -84,38 +82,39 @@ export class BookFormComponent implements OnInit {
 		this.formGroup.reset()
 	}
 	formatDate() {
-		const control = this.formGroup.get('fechaPublicacion');
+		const control = this.formGroup.get('fechaPublicacion')
 		if (control?.value) {
-		  const formatted = new Date(control.value);
-		  control.setValue(formatted.toISOString());
+			const formatted = new Date(control.value)
+			control.setValue(formatted.toISOString())
 		}
-	  }
-	  
+	}
 
 	submit(): void {
 		//para actualizar y crear
 		if (this.bookSelected) {
-			this._booksService.update(this.bookSelected.id, this.formGroup.value).subscribe({
-				next: response => {
-					this.resetFormGroup()
-					this.loadBooks.emit()
-					this.showToast.emit({
-						severity: 'success',
-						summary: 'Book updated',
-						details: 'The book has been updated.',
-						life: 3000
-					})
-				},
-				error: error => {
-					console.error('Error updating book', error)
-					this.showToast.emit({
-						severity: 'error',
-						summary: 'Error updating book.',
-						details: 'The book could not be updated.',
-						life: 3000
-					})
-				}
-			})
+			this._booksService
+				.update(this.bookSelected.id, this.formGroup.value)
+				.subscribe({
+					next: response => {
+						this.resetFormGroup()
+						this.loadBooks.emit()
+						this.showToast.emit({
+							severity: 'success',
+							summary: 'Book updated',
+							details: 'The book has been updated.',
+							life: 3000
+						})
+					},
+					error: error => {
+						console.error('Error updating book', error)
+						this.showToast.emit({
+							severity: 'error',
+							summary: 'Error updating book.',
+							details: 'The book could not be updated.',
+							life: 3000
+						})
+					}
+				})
 		} else {
 			this._booksService.create(this.formGroup.value).subscribe({
 				next: response => {
