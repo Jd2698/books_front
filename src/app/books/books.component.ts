@@ -10,7 +10,6 @@ import { BooksService } from './services/books.service'
 import { BookFormComponent } from './form/book-form.component'
 import { Ibook } from './model/book.model'
 import { FormsModule } from '@angular/forms'
-import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 
 @Component({
@@ -38,9 +37,8 @@ export class BooksComponent implements OnInit {
 		{ label: 'Titulo', value: 'titulo' },
 		{ label: 'Autor', value: 'autor' },
 		{ label: 'Genero', value: 'genero' },
-		{ label: 'Fecha de Publicacion', value: 'fechaPublicacion' },
-		{ label: 'Número de Paginas', value: 'numPaginas' },
-		{ label: 'Stock Disponible', value: 'stock_disponible' }
+		{ label: 'Número de Libros', value: 'numLibros' },
+		{ label: 'Disponible', value: 'disponible' }
 	]
 
 	books!: Ibook[]

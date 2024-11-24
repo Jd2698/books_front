@@ -1,33 +1,34 @@
 <form [formGroup]="formGroup">
+	<!-- update -->
 	<ng-container *ngIf="selectedLoan">
 		<div class="flex flex-col gap-1 mb-5">
 			<p-dropdown
-				placeholder="Has been returned"
-				formControlName="entregado"
+				placeholder="Estado"
+				formControlName="estado"
 				appendTo="body"
-				[options]="returnedOptions"
-				optionLabel="name"
+				[options]="statusOptions"
+				optionLabel="value"
 				optionValue="value"
 				[showClear]="true"
 				styleClass="w-full border"
 			>
 				<ng-template pTemplate="selectedItem" let-selectedOption>
 					<div class="flex align-items-center gap-2">
-						<div>{{ selectedOption.name }}</div>
+						<div>{{ selectedOption.value }}</div>
 					</div>
 				</ng-template>
-				<ng-template let-returned pTemplate="item">
+				<ng-template let-estado pTemplate="item">
 					<div class="flex align-items-center gap-2">
-						<div>{{ returned.name }}</div>
+						<div>{{ estado.value }}</div>
 					</div>
 				</ng-template>
 			</p-dropdown>
 
 			<span
-				*ngIf="hasError({field: 'usuarioId', error: 'required'}) || hasError({field: 'usuarioId', error: 'whitespace'})"
+				*ngIf="hasError({field: 'estado', error: 'inList'}) "
 				class="text-red-700 ml-1"
 			>
-				Field user is required
+				Field estado is required
 			</span>
 		</div>
 	</ng-container>
@@ -36,11 +37,11 @@
 		<!-- usuarioId -->
 		<div class="flex flex-col gap-1 mb-5">
 			<p-dropdown
-				placeholder="Select an user"
+				placeholder="Seleccione un usuario"
 				formControlName="usuarioId"
 				appendTo="body"
 				[options]="users"
-				optionLabel="name"
+				optionLabel="nombre"
 				optionValue="id"
 				[filter]="true"
 				filterBy="name"
@@ -49,12 +50,12 @@
 			>
 				<ng-template pTemplate="selectedItem" let-selectedOption>
 					<div class="flex align-items-center gap-2">
-						<div>{{ selectedOption.name }}</div>
+						<div>{{ selectedOption.nombre }}</div>
 					</div>
 				</ng-template>
 				<ng-template let-user pTemplate="item">
 					<div class="flex align-items-center gap-2">
-						<div>{{ user.name }}</div>
+						<div>{{ user.nombre }}</div>
 					</div>
 				</ng-template>
 			</p-dropdown>
@@ -70,7 +71,7 @@
 		<!-- libroId -->
 		<div class="flex flex-col gap-1 mb-5">
 			<p-dropdown
-				placeholder="Select a book"
+				placeholder="Seleccione un libro"
 				formControlName="libroId"
 				appendTo="body"
 				[options]="books"
@@ -105,7 +106,7 @@
 		<!-- fechaPrestamo -->
 		<div class="flex flex-col gap-1 mb-5">
 			<p-calendar
-				placeholder="loan Date"
+				placeholder="Fecha Prestamo"
 				formControlName="fechaPrestamo"
 				appendTo="body"
 				readonlyInput="true"
@@ -122,13 +123,13 @@
 			</span>
 		</div>
 
-		<!-- fechaDevuelto -->
+		<!-- fechaDevolucion -->
 		<div class="flex flex-col gap-1 mb-5">
 			<p-calendar
+				placeholder="Fecha Devolucion"
 				appendTo="body"
 				readonlyInput="true"
 				formControlName="fechaDevolucion"
-				placeholder="return Date"
 				styleClass="w-full"
 				panelStyleClass="!text-xs"
 				inputStyleClass="w-full border p-3"

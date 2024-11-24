@@ -1,11 +1,16 @@
 import { Component } from '@angular/core'
-import { Router, RouterOutlet } from '@angular/router'
+import {
+	Router,
+	RouterLink,
+	RouterLinkActive,
+	RouterOutlet
+} from '@angular/router'
 import { MenubarModule } from 'primeng/menubar'
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet, MenubarModule],
+	imports: [RouterOutlet, MenubarModule, RouterLinkActive, RouterLink],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.css'
 })
@@ -14,18 +19,18 @@ export class AppComponent {
 	items = [
 		{
 			label: 'users',
-			icon: 'pi pi-users text-3xl',
-			command: () => this._route.navigateByUrl('users')
+			icon: 'pi pi-users',
+			routerLink: '/users'
 		},
 		{
 			label: 'books',
-			icon: 'pi pi-book text-xl',
-			command: () => this._route.navigateByUrl('books')
+			icon: 'pi pi-book',
+			routerLink: '/books'
 		},
 		{
 			label: 'loans',
-			icon: 'pi pi-clipboard text-3xl',
-			command: () => this._route.navigateByUrl('loans')
+			icon: 'pi pi-clipboard',
+			routerLink: '/loans'
 		}
 	]
 }

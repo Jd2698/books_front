@@ -46,7 +46,7 @@ export class FormComponent implements OnInit {
 
 		if (this.selectedUser) {
 			this.formGroup.setValue({
-				name: this.selectedUser.name,
+				nombre: this.selectedUser.nombre,
 				email: this.selectedUser.email,
 				telefono: this.selectedUser.telefono
 			})
@@ -55,7 +55,7 @@ export class FormComponent implements OnInit {
 
 	initializeForm(): void {
 		this.formGroup = this._formBuild.group({
-			name: ['', [Validators.required, noWhitespaceValidator()]],
+			nombre: ['', [Validators.required, noWhitespaceValidator()]],
 			email: ['', [Validators.required, Validators.email]],
 			telefono: [null, Validators.pattern(/^\d{10}$/)]
 		})
@@ -88,6 +88,7 @@ export class FormComponent implements OnInit {
 				next: response => {
 					this.resetFormGroup()
 					this.refreshUsers.emit()
+					this.emitModalToggle()
 
 					this.showToast.emit({
 						severity: 'success',
@@ -111,6 +112,7 @@ export class FormComponent implements OnInit {
 				next: response => {
 					this.resetFormGroup()
 					this.refreshUsers.emit()
+					this.emitModalToggle()
 
 					this.showToast.emit({
 						severity: 'success',

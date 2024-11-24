@@ -1,6 +1,6 @@
 export interface Iuser {
-  id: number;
-  name: string;
-  email: string;
-  telefono?: number;
+	id: number
+	nombre: string
+	email: string
+	telefono?: string
 }

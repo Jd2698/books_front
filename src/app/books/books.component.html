@@ -47,8 +47,8 @@
 	<ng-template pTemplate="body" let-product>
 		<tr>
 			<td *ngFor="let header of headersTable">
-				{{product[header['value']] ? header['value'] == 'fechaPublicacion' ?
-				(product[header['value']] | date) : product[header['value']] : 'N/A'}}
+				{{header['value'] == 'fechaPublicacion' ? (product[header['value']] |
+				date) : product[header['value']]}}
 			</td>
 			<td class="flex gap-2">
 				<p-confirmPopup />
@@ -76,13 +76,13 @@
 <span class="hidden w-96"></span>
 <p-dialog
 	draggable="false"
-	[header]="selectedBook ? 'Update book' :'Create a new book'"
+	header="Libro"
 	[modal]="true"
 	[(visible)]="isModalVisible"
 	styleClass="w-96 sm:w-[500px]"
 >
 	<span class="p-text-secondary block mb-5"
-		>{{selectedBook ? 'Update book' :'Create a new book'}}</span
+		>{{selectedBook ? 'Actualizar libro existente' : 'Crear nuevo libro'}}</span
 	>
 
 	<ng-container *ngIf="isModalVisible">

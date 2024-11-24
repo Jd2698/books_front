@@ -36,23 +36,23 @@
 
 	<ng-template pTemplate="header">
 		<tr>
-			<th pSortableColumn="libro.titulo">Book</th>
-			<th pSortableColumn="usuario.name">User</th>
-			<th pSortableColumn="usuario.email">User email</th>
-			<th pSortableColumn="fechaPrestamo">LoanDate</th>
-			<th pSortableColumn="fechaDevolucion">ReturnDate</th>
-			<th pSortableColumn="entregado">Returned</th>
+			<th pSortableColumn="libro.titulo">Libro</th>
+			<th pSortableColumn="usuario.nombre">Nombre de usuario</th>
+			<th pSortableColumn="usuario.email">Email de usuario</th>
+			<th pSortableColumn="fechaPrestamo">Fecha prestamo</th>
+			<th pSortableColumn="fechaDevolucion">Fecha Devolucion</th>
+			<th pSortableColumn="estado">Estado</th>
 			<th>Actions</th>
 		</tr>
 	</ng-template>
 	<ng-template pTemplate="body" let-loan>
 		<tr>
 			<td>{{ loan.libro.titulo }}</td>
-			<td>{{ loan.usuario.name }}</td>
+			<td>{{ loan.usuario.nombre }}</td>
 			<td>{{ loan.usuario.email }}</td>
 			<td>{{ loan.fechaPrestamo | date }}</td>
 			<td>{{ loan.fechaDevolucion | date }}</td>
-			<td>{{ loan.entregado? 'yes' : 'no' }}</td>
+			<td>{{ loan.estado }}</td>
 			<td class="flex gap-2">
 				<p-confirmPopup />
 				<p-button
@@ -77,13 +77,15 @@
 </p-table>
 
 <p-dialog
-	[header]="'Create a new loan'"
+	header="Prestamo"
 	draggable="false"
 	[modal]="true"
 	[(visible)]="isModalVisible"
 	[style]="{ width: '25rem' }"
 >
-	<span class="p-text-secondary block mb-5">{{'Create a new loan'}}</span>
+	<span class="p-text-secondary block mb-5"
+		>{{selectedLoan ? 'Actualizar prestamo existente' : 'Crear nuevo prestamo'}}</span
+	>
 
 	<ng-container *ngIf="isModalVisible">
 		<app-form

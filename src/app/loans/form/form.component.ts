@@ -22,6 +22,8 @@ import { BooksService } from '../../books/services/books.service'
 import { Iuser } from '../../users/model/user.model'
 import { Iloan } from '../model/loan.model'
 import { Ibook } from '../../books/model/book.model'
+import { EstadoEntregado } from '../../books/enums/estadoEntregado.enum'
+import { inList } from '../../shared/inList.validator'
 
 @Component({
 	selector: 'app-form',
@@ -49,16 +51,11 @@ export class FormComponent implements OnInit {
 	}>()
 
 	disableReturnedOptions: boolean = false
-	returnedOptions = [
-		{
-			name: 'yes',
-			value: 1
-		},
-		{
-			name: 'no',
-			value: 0
-		}
-	]
+	statusOptions = Object.values(EstadoEntregado).map(value => {
+		return { value }
+	})
+
+	statusOptionsArray = Object.values(EstadoEntregado)
 
 	minLoanDate: Date = new Date()
 	LoanDate!: Date
@@ -80,12 +77,15 @@ export class FormComponent implements OnInit {
 	initializeForm(): void {
 		if (this.selectedLoan) {
 			this.formGroup = this._formBuild.group({
-				entregado: [this.selectedLoan.entregado, Validators.required]
+				estado: [
+					this.selectedLoan.estado,
+					[Validators.required, inList(this.statusOptionsArray)]
+				]
 			})
 
 			// deshabilitar input entregado
-			if (this.selectedLoan.entregado == 1) {
-				this.formGroup.get('entregado')?.disable()
+			if (this.selectedLoan.estado == EstadoEntregado.DEVUELTO) {
+				this.formGroup.get('estado')?.disable()
 			}
 		} else {
 			this.formGroup = this._formBuild.group({
@@ -95,7 +95,8 @@ export class FormComponent implements OnInit {
 				fechaDevolucion: [
 					{ value: null, disabled: true },
 					[Validators.required]
-				]
+				],
+				estado: [EstadoEntregado.PENDIENTE, [inList(this.statusOptionsArray)]]
 			})
 		}
 
@@ -118,7 +119,9 @@ export class FormComponent implements OnInit {
 		})
 		this._bookService.getAll().subscribe({
 			next: (response: Ibook[]) => {
-				this.books = response
+				this.books = response.map(v => {
+					return { ...v, deshabilitar: !v.disponible }
+				})
 			}
 		})
 	}

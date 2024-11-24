@@ -4,5 +4,5 @@ export interface Iloan {
 	libroId: number
 	fechaPrestamo: Date
 	fechaDevolucion: Date
-	entregado?: number
+	estado: string
 }

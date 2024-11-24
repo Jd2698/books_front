@@ -6,6 +6,6 @@ export interface Ibook {
 	numPaginas?: number
 	resumen?: string
 	autor: string
-	stock_disponible: number
+	numLibros: number
 	disponible: boolean
 }
