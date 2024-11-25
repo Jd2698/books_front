@@ -36,6 +36,7 @@
 
 	<ng-template pTemplate="header" class="bg-red-400">
 		<tr>
+			<th >Imagen</th>
 			<th pSortableColumn="nombre">Nombre</th>
 			<th pSortableColumn="email">Email</th>
 			<th pSortableColumn="telefono">Telefono</th>
@@ -44,6 +45,9 @@
 	</ng-template>
 	<ng-template pTemplate="body" let-product>
 		<tr>
+			<td>
+				<img [src]="'http://localhost:3000/images/' + product.imagen" [alt]="product.imagen" class="w-28">
+			</td>
 			<td >{{ product.nombre }}</td>
 			<td>{{ product.email }}</td>
 			<td>{{ product.telefono || 'none' }}</td>

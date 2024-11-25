@@ -1,4 +1,21 @@
 <form [formGroup]="formGroup">
+	<!-- imagen -->
+
+	<div class="flex flex-col gap-1 mb-5">
+		<label for="img" class="w-16 block text-sm font-medium">Imagen</label>
+		<input
+			id="img"
+			type="file"
+			class="p-2 border rounded flex-auto"
+			autocomplete="off"
+			(change)="changeFile($event)"
+		/>
+
+		<div *ngIf="imageSrc">
+			<img [src]="imageSrc" alt="Imagen seleccionada" class="w-full">
+		  </div>
+	</div>
+	
 	<!-- nombre -->
 	<div class="flex flex-col gap-1 mb-5">
 		<label for="name" class="w-16 block text-sm font-medium">Nombre *</label>

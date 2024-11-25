@@ -9,6 +9,10 @@ export class UsersService {
 	constructor(private _http: HttpClient) {}
 	urlPath: string = 'http://localhost:3000/users'
 
+	uploadImage(data:any): Observable<any> {
+		return this._http.post(`${this.urlPath}/upload`, data)
+	}
+
 	getAll(): Observable<Iuser[]> {
 		return this._http.get<Iuser[]>(this.urlPath)
 	}
