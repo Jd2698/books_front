@@ -13,7 +13,7 @@
 			|| hasError({field: 'titulo', error: 'whitespace'})"
 			class="text-red-700"
 		>
-			Titulo is required
+			This field is required
 		</span>
 	</div>
 
@@ -30,7 +30,7 @@
 			*ngIf="hasError({field: 'autor', error: 'required'}) || hasError({field: 'autor', error: 'whitespace'})"
 			class="text-red-700"
 		>
-			Autor is required
+			This field is required
 		</span>
 	</div>
 
@@ -47,7 +47,7 @@
 			*ngIf="hasError({field: 'genero', error: 'required'}) || hasError({field: 'genero', error: 'whitespace'})"
 			class="text-red-700"
 		>
-			Gégenero is required
+			This filed is required
 		</span>
 	</div>
 
@@ -71,7 +71,7 @@
 			*ngIf="hasError({field: 'fechaPublicacion', error: 'required'})"
 			class="text-red-700"
 		>
-			Fecha de Publicacion is required
+			This filed is required
 		</span>
 	</div>
 
@@ -80,24 +80,24 @@
 		<label for="numPaginas" class="text-sm font-medium"
 			>Número de Paginas</label
 		>
-		<input
-			id="numPaginas"
-			class="p-2 border rounded"
-			autocomplete="off"
-			formControlName="numPaginas"
-			type="number"
-		/>
+		
+		<p-inputNumber 
+			formControlName="numPaginas" 
+			inputStyleClass="p-2 border rounded"
+			[useGrouping]="false"
+    		mode="decimal" />
+
 		<span
 			*ngIf="hasError({field: 'numPaginas', error: 'required'})"
 			class="text-red-700"
 		>
-			Número de Paginas is not valid
+			This field is required
 		</span>
 		<span
 			*ngIf="hasError({field: 'numPaginas', error: 'min'})"
 			class="text-red-700"
 		>
-			Número de Paginas must be greater than 0
+			This field must be greater than 0
 		</span>
 	</div>
 
@@ -114,10 +114,11 @@
 		>
 		</textarea>
 		<span
-			*ngIf="hasError({field: 'resumen', error: 'required'})"
-			class="text-red-700"
-		>
-			Resumen is not valid
+			*ngIf="hasError({field: 'resumen', error: 'required'}) 
+					|| hasError({field: 'resumen', error: 'minlength'}) 
+					|| hasError({field: 'resumen', error: 'whitespace'})"
+			class="text-red-700">
+			This field is required
 		</span>
 	</div>
 
@@ -126,13 +127,13 @@
 		<label for="numLibros" class="text-sm font-medium"
 			>Cantidad de libros *</label
 		>
-		<input
-			id="numLibros"
-			class="p-3 border rounded"
-			autocomplete="off"
-			formControlName="numLibros"
-			type="number"
-		/>
+		<p-inputNumber 
+			formControlName="numLibros" 
+			styleClass=""
+			inputStyleClass="p-3 border rounded w-full"
+			[useGrouping]="false"
+			mode="decimal" />
+
 		<span
 			*ngIf="hasError({field: 'numLibros', error: 'required'})"
 			class="text-red-700"

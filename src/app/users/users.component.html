@@ -36,15 +36,15 @@
 
 	<ng-template pTemplate="header" class="bg-red-400">
 		<tr>
-			<th>Nombre</th>
-			<th>Email</th>
-			<th>Telefono</th>
+			<th pSortableColumn="nombre">Nombre</th>
+			<th pSortableColumn="email">Email</th>
+			<th pSortableColumn="telefono">Telefono</th>
 			<th>Actions</th>
 		</tr>
 	</ng-template>
 	<ng-template pTemplate="body" let-product>
 		<tr>
-			<td>{{ product.nombre }}</td>
+			<td >{{ product.nombre }}</td>
 			<td>{{ product.email }}</td>
 			<td>{{ product.telefono || 'none' }}</td>
 			<td class="flex gap-2">
