@@ -44,14 +44,14 @@
 		</tr>
 	</ng-template>
 	<ng-template pTemplate="body" let-product>
-		<tr>
+		<tr >
 			<td>
-				<img [src]="product.urlImagen" [alt]="product.imagen" class="w-28 h-24" />
+				<img [src]="product.urlImagen" [alt]="product.urlImagen" class="w-28 h-24" />
 			</td>
 			<td>{{ product.nombre }}</td>
 			<td>{{ product.email }}</td>
 			<td>{{ product.telefono || 'none' }}</td>
-			<td class="flex gap-2">
+			<td class="space-x-3">
 				<p-confirmPopup />
 				<p-button
 					(onClick)="setSelectedUser(product)"

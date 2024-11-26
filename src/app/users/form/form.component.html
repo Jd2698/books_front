@@ -11,8 +11,11 @@
 			(change)="changeFile($event)"
 		/>
 
-		<div *ngIf="imageSrc">
-			<img [src]="imageSrc" alt="Imagen seleccionada" class="w-full">
+		<div *ngIf="imageSrc" class="flex justify-center">
+			<img [src]="imageSrc" alt="Imagen seleccionada" class="w-28 h-28 p-2 object-cover rounded-full overflow-hidden shadow-lg">
+		  </div>
+		<div *ngIf="selectedUser" class="flex justify-center ">
+			<img [src]="selectedUser.urlImagen" alt="Imagen seleccionada" class="w-28 h-28 p-2 object-cover rounded-full overflow-hidden shadow-lg">
 		  </div>
 	</div>
 	
