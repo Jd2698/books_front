@@ -36,7 +36,7 @@
 
 	<ng-template pTemplate="header" class="bg-red-400">
 		<tr>
-			<th >Imagen</th>
+			<th>Imagen</th>
 			<th pSortableColumn="nombre">Nombre</th>
 			<th pSortableColumn="email">Email</th>
 			<th pSortableColumn="telefono">Telefono</th>
@@ -46,9 +46,9 @@
 	<ng-template pTemplate="body" let-product>
 		<tr>
 			<td>
-				<img [src]="'http://localhost:3000/images/' + product.imagen" [alt]="product.imagen" class="w-28">
+				<img [src]="product.urlImagen" [alt]="product.imagen" class="w-28 h-24" />
 			</td>
-			<td >{{ product.nombre }}</td>
+			<td>{{ product.nombre }}</td>
 			<td>{{ product.email }}</td>
 			<td>{{ product.telefono || 'none' }}</td>
 			<td class="flex gap-2">
@@ -82,7 +82,8 @@
 	[style]="{ width: '25rem' }"
 >
 	<span class="p-text-secondary block mb-5"
-		>{{selectedUser ? 'Actualizar usuario existente' :'Crear nuevo usuario'}}</span
+		>{{selectedUser ? 'Actualizar usuario existente' :'Crear nuevo
+		usuario'}}</span
 	>
 
 	<ng-container *ngIf="isModalVisible">

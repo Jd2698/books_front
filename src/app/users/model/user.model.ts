@@ -3,4 +3,5 @@ export interface Iuser {
 	nombre: string
 	email: string
 	telefono?: string
+	imagen?: string
 }

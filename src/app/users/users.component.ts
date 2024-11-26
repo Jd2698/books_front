@@ -11,6 +11,7 @@ import { NgIf } from '@angular/common'
 import { Iuser } from './model/user.model'
 import { FormsModule } from '@angular/forms'
 import { InputIconModule } from 'primeng/inputicon'
+import { map } from 'rxjs'
 
 @Component({
 	selector: 'app-users',
@@ -45,11 +46,28 @@ export class UsersComponent implements OnInit {
 		this.loadUsers()
 	}
 
+	URLHOST: string = 'http://localhost:3000/images/'
+
 	loadUsers(): void {
-		this._userService.getAll().subscribe({
-			next: (response: Iuser[]) => (this.users = response),
-			error: error => console.log('Error fetching  users', error)
-		})
+		this._userService
+			.getAll()
+			.pipe(
+				// agregarle la url completa de la imagen
+				map((response: Iuser[]) => {
+					return response.map((user: Iuser) => {
+						return {
+							...user,
+							urlImagen: user.imagen
+								? `${this.URLHOST}${user.imagen}`
+								: 'not found'
+						}
+					})
+				})
+			)
+			.subscribe({
+				next: (response: Iuser[]) => (this.users = response),
+				error: error => console.log('Error fetching  users', error)
+			})
 	}
 
 	toggleModalVisibility(): void {
