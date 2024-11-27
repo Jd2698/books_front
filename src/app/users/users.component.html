@@ -46,7 +46,7 @@
 	<ng-template pTemplate="body" let-product>
 		<tr >
 			<td>
-				<img [src]="product.urlImagen" [alt]="product.urlImagen" class="w-28 h-24" />
+				<img [src]="product.urlImagen" [alt]="product.urlImagen" class="w-28 h-24 object-contain" />
 			</td>
 			<td>{{ product.nombre }}</td>
 			<td>{{ product.email }}</td>

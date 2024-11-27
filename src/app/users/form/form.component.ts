@@ -17,7 +17,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
 import { UsersService } from '../services/users.service';
 import { noWhitespaceValidator } from '../../shared/whitespace.validator';
-import { Iuser } from '../model/user.model';
+import { imageTypeValidator } from '../../shared/imageTypeValidator.validator';
 
 @Component({
   selector: 'app-form',
@@ -52,6 +52,7 @@ export class FormComponent implements OnInit {
         nombre: this.selectedUser.nombre,
         email: this.selectedUser.email,
         telefono: this.selectedUser.telefono,
+        imagen: this.selectedUser.imagen,
       });
     }
   }
@@ -61,6 +62,7 @@ export class FormComponent implements OnInit {
       nombre: ['', [Validators.required, noWhitespaceValidator()]],
       email: ['', [Validators.required, Validators.email]],
       telefono: [null, Validators.pattern(/^\d{10}$/)],
+      imagen: [null, imageTypeValidator],
     });
   }
 
@@ -81,33 +83,44 @@ export class FormComponent implements OnInit {
     this.formGroup.reset();
   }
 
-  changeFile(event: any) {
+  changeFile(event: any): void {
     const file = event.target.files[0];
-    if (this.formData.has('file')) this.formData.delete('file');
-    this.formData.append('file', file, file.name);
+    this.formGroup.controls['imagen'].markAsTouched();
 
-    const reader = new FileReader();
+    // agregarlo al formdata y al formgroup
+    this.formGroup.controls['imagen'].setValue(file);
+    if (file && this.formGroup.controls['imagen'].valid) {
+      this.formData.set('file', file, file.name);
+      this.formGroup.controls['imagen'].setValue(file);
 
-    reader.onload = () => {
-      this.imageSrc = reader.result;
-    };
+      const reader = new FileReader();
 
-    reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.imageSrc = reader.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.imageSrc = null;
+    }
   }
 
   submit(): void {
+    // agregar los valores al formData y no incluir datos nulos
     const formValues = this.formGroup.value;
-    let data = { ...formValues };
+    for (const key in formValues) {
+      if (formValues.hasOwnProperty(key)) {
+        if (formValues[key]) this.formData.append(key, formValues[key]);
+      }
+    }
+
+    // agregar la url de la imagen
+    this.selectedUser
+      ? this.formData.set('imagen', this.selectedUser.imagen)
+      : this.formData.delete('imagen');
 
     //para actualizar y crear
     if (this.selectedUser) {
-      for (const key in formValues) {
-        if (formValues.hasOwnProperty(key)) {
-          this.formData.append(key, formValues[key]);
-        }
-      }
-
-      this._userService.update(this.selectedUser.id, data).subscribe({
+      this._userService.update(this.selectedUser.id, this.formData).subscribe({
         next: (response) => {
           this.resetFormGroup();
           this.refreshUsers.emit();
@@ -131,16 +144,6 @@ export class FormComponent implements OnInit {
         },
       });
     } else {
-      for (const key in formValues) {
-        if (formValues.hasOwnProperty(key)) {
-          console.log(key);
-
-          this.formData.append(key, formValues[key]);
-        }
-	  }
-		
-		return
-
       this._userService.create(this.formData).subscribe({
         next: (response) => {
           this.resetFormGroup();

@@ -25,7 +25,7 @@ export class UsersService {
     return this._http.delete<Iuser>(`${this.urlPath}/${userId}`);
   }
 
-  update(userId: number, data: Iuser): Observable<Iuser> {
+  update(userId: number, data: FormData): Observable<Iuser> {
     return this._http.put<Iuser>(`${this.urlPath}/${userId}`, data);
   }
 }
