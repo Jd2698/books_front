@@ -21,12 +21,15 @@ export class BooksService {
 			})
 		)
 	}
-	update(id: string, body: any): Observable<any> {
-		return this.httpClient.put(`${this.urlPath}/${id}`, body)
-	}
+
 	create(body: any): Observable<any> {
 		return this.httpClient.post(this.urlPath, body)
 	}
+
+	update(id: string, body: any): Observable<any> {
+		return this.httpClient.put(`${this.urlPath}/${id}`, body)
+	}
+
 	delete(id: number): Observable<any> {
 		return this.httpClient.delete<any>(`${this.urlPath}/${id}`)
 	}
