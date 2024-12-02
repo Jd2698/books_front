@@ -6,10 +6,8 @@ export function imageTypeValidator(
   const file = control.value;
   if (file) {
     const mimeType = file.type;
-    if (!mimeType.startsWith('image/')) {
+    if (mimeType && !mimeType.startsWith('image/')) {
       return { invalidImage: true };
-    } else {
-      return null;
     }
   }
   return null;

@@ -1,87 +1,160 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UsersComponent } from './users.component'
-import { UsersService } from './services/users.service'
-import { Confirmation, ConfirmationService, MessageService } from 'primeng/api'
-import { of, pipe } from 'rxjs'
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core'
+import { UsersComponent } from './users.component';
+import { UsersService } from './services/users.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { of, pipe, throwError } from 'rxjs';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
-const userServiceMock = {
-	getAll: jest.fn(() => of([updateUserDataMock])),
-	delete: jest.fn(() => of(userDataMock))
-}
+// npx jest src/app/users/users.component.spec.ts
 
 const userDataMock = {
-	id: 1,
-	nombre: 'martha',
-	image: 'image/photo.jgp'
-}
+  id: 1,
+  nombre: 'martha',
+  imagen: 'image/photo.jgp',
+};
 
-const updateUserDataMock = {
-	id: 1,
-	nombre: 'martha',
-	image: 'http://localhost:3000/images/image/photo.jgp'
-}
+const userServiceMock = {
+  getAll: jest.fn(() => of([userDataMock])),
+  delete: jest.fn(() => of(userDataMock)),
+};
 
 const confirmationServiceMock = {
-	requireConfirmation$: of(),
-	accept: of(),
+  requireConfirmation$: of(),
+  accept: of(),
 
-	confirm: jest.fn().mockImplementation(options => {
-		options.accept()
-	}),
-	close: jest.fn().mockReturnThis(),
-	onAccept: jest.fn()
-}
+  confirm: jest.fn().mockImplementation((options) => {
+    options.accept();
+  }),
+  close: jest.fn().mockReturnThis(),
+  onAccept: jest.fn(),
+};
+
+const messageServiceMock = {
+  messageObserver: of(),
+  clearObserver: of(),
+  add: jest.fn(),
+};
 
 describe('UsersComponent', () => {
-	let component: UsersComponent
-	let fixture: ComponentFixture<UsersComponent>
+  let component: UsersComponent;
+  let fixture: ComponentFixture<UsersComponent>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-			imports: [UsersComponent],
-			providers: [
-				{ provide: UsersService, useValue: userServiceMock },
-				{ provide: ConfirmationService, useValue: confirmationServiceMock },
-				MessageService,
-				pipe
-			]
-		}).compileComponents()
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+      imports: [UsersComponent],
+      providers: [
+        { provide: UsersService, useValue: userServiceMock },
+        { provide: ConfirmationService, useValue: confirmationServiceMock },
+        { provide: MessageService, useValue: messageServiceMock },
+        pipe,
+      ],
+    }).compileComponents();
 
-		fixture = TestBed.createComponent(UsersComponent)
-		component = fixture.componentInstance
-		fixture.detectChanges()
-	})
+    fixture = TestBed.createComponent(UsersComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-	it('should create', () => {
-		expect(component).toBeTruthy()
-	})
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-	it('loadUsers has been called in onInit', () => {
-		component.ngOnInit()
-		expect(userServiceMock.getAll).toHaveBeenCalled()
-	})
+  it('toggleModalVisibility has been called in setSelectedBook', () => {
+    const toggleModalVisibilitySpy = jest.spyOn(
+      component,
+      'toggleModalVisibility'
+    );
+    component.setSelectedUser({
+      id: 20,
+      nombre: 'carlos',
+      email: 'carlgos@gmail.com',
+    });
+    expect(toggleModalVisibilitySpy).toHaveBeenCalled();
+  });
 
-	it('should call delete', () => {
-		component.deleteUser(1)
-		expect(userServiceMock.delete).toHaveBeenCalled()
-	})
+  it('loadUsers has been called in onInit', () => {
+    const loadUsersSpy = jest.spyOn(component, 'loadUsers');
+    component.ngOnInit();
+    expect(loadUsersSpy).toHaveBeenCalled();
+  });
 
-	it('should call deleteUser when confirmation is accepted', () => {
-		const deleteUserMock = jest.spyOn(component, 'deleteUser')
+  it('should call getAll and map users with the image URL', () => {
+    component.loadUsers();
+    expect(component.users).toEqual([
+      {
+        id: 1,
+        nombre: 'martha',
+        imagen: 'image/photo.jgp',
+        urlImagen: `${component.URLHOST}image/photo.jgp`,
+      },
+    ]);
+  });
 
-		const mockEvent = {
-			target: {}
-		} as Event
+  it('should call getAll and map users with URL not found', () => {
+    userServiceMock.getAll.mockReturnValue(
+      of([{ ...userDataMock, imagen: '' }])
+    );
 
-		const userId = 2
+    component.loadUsers();
+    expect(component.users).toEqual([
+      {
+        ...userDataMock,
+        imagen: "",
+        urlImagen: 'not found',
+      },
+    ]);
+  });
 
-		confirmationServiceMock.confirm
+  it('should call delete', () => {
+    component.deleteUser(1);
+    expect(userServiceMock.delete).toHaveBeenCalled();
+  });
 
-		component.confirmDelete(mockEvent, userId)
+  it('should call deleteUser when confirmation is accepted', () => {
+    const deleteUserSpy = jest.spyOn(component, 'deleteUser');
 
-		expect(deleteUserMock).toHaveBeenCalledWith(userId)
-	})
-})
+    const mockEvent = {
+      target: {},
+    } as Event;
+
+    const userId = 2;
+
+    confirmationServiceMock.confirm;
+
+    component.confirmDelete(mockEvent, userId);
+
+    expect(deleteUserSpy).toHaveBeenCalledWith(userId);
+  });
+
+  it('should handle error when getAll() fails', () => {
+    const showToastSpy = jest.spyOn(component, 'showToast');
+
+    userServiceMock.getAll.mockReturnValue(throwError(() => new Error()));
+
+    component.loadUsers();
+
+    expect(showToastSpy).toHaveBeenCalledWith({
+      details: 'error',
+      life: 2000,
+      severity: 'error',
+      summary: 'danger',
+    });
+  });
+
+  it('should handle error when deleteuser() fails', () => {
+    const showToastSpy = jest.spyOn(component, 'showToast');
+
+    userServiceMock.delete.mockReturnValue(throwError(() => new Error()));
+
+    component.deleteUser(20);
+
+    expect(showToastSpy).toHaveBeenCalledWith({
+      details: 'error',
+      life: 2000,
+      severity: 'error',
+      summary: 'danger',
+    });
+  });
+});
