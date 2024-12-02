@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing'
 import { BooksService } from './books.service'
 import { HttpClient } from '@angular/common/http'
 import { of } from 'rxjs'
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core'
 
 const httpServiceMock = {
 	get: jest.fn(() => of(bookListMock)),
@@ -24,6 +25,7 @@ describe('BooksService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
+			schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 			providers: [
 				BooksService,
 				{
