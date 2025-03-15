@@ -1,36 +1,21 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import {
-	Router,
-	RouterLink,
-	RouterLinkActive,
 	RouterOutlet
 } from '@angular/router'
-import { MenubarModule } from 'primeng/menubar'
+import { initFlowbite } from 'flowbite';
+import { NavBarComponent } from './features/nav-bar/nav-bar.component';
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet, MenubarModule, RouterLinkActive, RouterLink],
+	imports: [RouterOutlet, NavBarComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.css'
 })
-export class AppComponent {
-	constructor(private _route: Router) {}
-	items = [
-		{
-			label: 'users',
-			icon: 'pi pi-users',
-			routerLink: '/users'
-		},
-		{
-			label: 'books',
-			icon: 'pi pi-book',
-			routerLink: '/books'
-		},
-		{
-			label: 'loans',
-			icon: 'pi pi-clipboard',
-			routerLink: '/loans'
-		}
-	]
+export class AppComponent implements OnInit{
+	constructor() { }
+	
+	ngOnInit(): void {
+		initFlowbite()
+	}
 }

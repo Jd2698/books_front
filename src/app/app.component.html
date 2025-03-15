@@ -1,18 +1,5 @@
-<div class="card">
-	<p-menubar [model]="items" styleClass="p-4">
-		<ng-template let-item pTemplate="item">
-			<a
-				[routerLink]="item.routerLink"
-				routerLinkActive="bg-white shadow-md"
-				class="p-3 flex gap-2 items-center rounded shadow-sm"
-			>
-				<i [class]="item.icon" class="text-xl"></i>
-				<span>{{item.label}}</span>
-			</a>
-		</ng-template>
-	</p-menubar>
-</div>
+<app-nav-bar/>
 
-<main class="p-4">
+<main class="mt-16 p-4">
 	<router-outlet />
 </main>
