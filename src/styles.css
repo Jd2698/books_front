@@ -1,11 +1,24 @@
-@import "primeng/resources/themes/lara-light-blue/theme.css";
-@import "primeng/resources/primeng.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-*{
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-	/* font-size: 14px; */
+/* @import "flowbite/src/themes/default"; */
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+body {
+	@apply bg-custom-body
 }
+
+/* 
+// Fondo (Beige claro, estilo papel): #F5F1E6
+// Detalles (Azul oscuro): #2C3E50
+// Detalles (Verde oliva): #6B8E23
+// Detalles (Burdeos): #800020
+// Botones y acentos (Mostaza): #D4A017
+// Botones y acentos (Rojo teja): #C1440E 
+
+// fondo 1 (beige claro): #e7ddc8 
+// fondo 2 (verde gris): #556259 
+// fondo nav (beige oscuro): #c8af8c 
+*/
