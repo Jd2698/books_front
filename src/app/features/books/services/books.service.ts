@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { catchError, map, Observable, throwError } from 'rxjs'
-import { Ibook } from '../model/book.model'
+import { IBook } from '../model/book.model'
 
 @Injectable({
 	providedIn: 'root'

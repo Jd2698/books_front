@@ -1,11 +1,17 @@
-export interface Ibook {
-	id: string
+export interface IBook {
+	id: number
 	titulo: string
-	fechaPublicacion: Date
+	fecha_publicacion: Date
 	genero: string
-	numPaginas?: number
 	resumen?: string
 	autor: string
-	numLibros: number
+	numero_paginas?: number
+	numero_libros: number
 	disponible: boolean
+	_count: Count
+	deshabilitar: boolean
+}
+
+export interface Count {
+	prestamos: number
 }

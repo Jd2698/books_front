@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { DatePipe, NgFor, NgIf } from '@angular/common'
 import { BooksService } from './services/books.service'
 import { BookFormComponent } from './form/book-form.component'
-import { Ibook } from './model/book.model'
+import { IBook } from './model/book.model'
 import { FormsModule } from '@angular/forms'
 
 @Component({
@@ -22,9 +22,9 @@ export class BooksComponent implements OnInit {
 		{ label: 'Disponible', value: 'disponible' }
 	]
 
-	books!: Ibook[]
+	books!: IBook[]
 	isModalVisible: boolean = false
-	selectedBook?: Ibook
+	selectedBook?: IBook
 
 	constructor(private _bookService: BooksService) {}
 
@@ -34,7 +34,7 @@ export class BooksComponent implements OnInit {
 
 	loadBooks(): void {
 		this._bookService.getAll().subscribe({
-			next: (response: Ibook[]) => {
+			next: (response: IBook[]) => {
 				this.books = response
 			},
 			error: error => {}

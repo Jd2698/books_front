@@ -14,7 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { BooksService } from '../services/books.service';
-import { Ibook } from '../model/book.model';
+import { IBook } from '../model/book.model';
 import { noWhitespaceValidator } from '../../../shared/whitespace.validator';
 
 @Component({
@@ -28,7 +28,7 @@ import { noWhitespaceValidator } from '../../../shared/whitespace.validator';
   styleUrl: './book-form.component.css',
 })
 export class BookFormComponent implements OnInit {
-  @Input() selectedBook?: Ibook;
+  @Input() selectedBook?: IBook;
 
   @Output() toggleModalVisibility = new EventEmitter<void>();
   @Output() refreshBooks = new EventEmitter<void>();
@@ -62,18 +62,18 @@ export class BookFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.selectedBook) {
-      this.formGroup.setValue({
-        titulo: this.selectedBook.titulo,
-        fechaPublicacion: this.selectedBook.fechaPublicacion
-          .toString()
-          .split('T')[0],
-        genero: this.selectedBook.genero,
-        numPaginas: this.selectedBook.numPaginas,
-        resumen: this.selectedBook.resumen,
-        autor: this.selectedBook.autor,
-        numLibros: this.selectedBook.numLibros,
-        disponible: this.selectedBook.disponible,
-      });
+      // this.formGroup.setValue({
+      //   titulo: this.selectedBook.titulo,
+      //   fechaPublicacion: this.selectedBook.fechaPublicacion
+      //     .toString()
+      //     .split('T')[0],
+      //   genero: this.selectedBook.genero,
+      //   numPaginas: this.selectedBook.numPaginas,
+      //   resumen: this.selectedBook.resumen,
+      //   autor: this.selectedBook.autor,
+      //   numLibros: this.selectedBook.numLibros,
+      //   disponible: this.selectedBook.disponible,
+      // });
     }
   }
 
@@ -101,29 +101,29 @@ export class BookFormComponent implements OnInit {
         this.formGroup.get('fechaPublicacion')?.value
       );
       const updatedData = { ...this.formGroup.value, fechaPublicacion };
-      this._booksService.update(this.selectedBook.id, updatedData).subscribe({
-        next: (response) => {
-          this.resetFormGroup();
-          this.refreshBooks.emit();
-          this.emitModalToggle();
+      // this._booksService.update(this.selectedBook.id, updatedData).subscribe({
+      //   next: (response) => {
+      //     this.resetFormGroup();
+      //     this.refreshBooks.emit();
+      //     this.emitModalToggle();
 
-          this.showToast.emit({
-            severity: 'success',
-            summary: 'Book updated',
-            details: 'The book has been updated.',
-            life: 3000,
-          });
-        },
-        error: (error) => {
-          console.error('Error updating book', error);
-          this.showToast.emit({
-            severity: 'error',
-            summary: 'Error updating book.',
-            details: 'The book could not be updated.',
-            life: 3000,
-          });
-        },
-      });
+      //     this.showToast.emit({
+      //       severity: 'success',
+      //       summary: 'Book updated',
+      //       details: 'The book has been updated.',
+      //       life: 3000,
+      //     });
+      //   },
+      //   error: (error) => {
+      //     console.error('Error updating book', error);
+      //     this.showToast.emit({
+      //       severity: 'error',
+      //       summary: 'Error updating book.',
+      //       details: 'The book could not be updated.',
+      //       life: 3000,
+      //     });
+      //   },
+      // });
     } else {
       this._booksService.create(this.formGroup.value).subscribe({
         next: (response) => {
