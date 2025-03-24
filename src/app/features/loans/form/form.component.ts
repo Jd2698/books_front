@@ -17,16 +17,14 @@ import { UsersService } from '../../users/services/users.service'
 import { BooksService } from '../../books/services/books.service'
 import { Iuser } from '../../users/model/user.model'
 import { Iloan } from '../model/loan.model'
-import { IBook } from '../../books/model/book.model'
+import { IBook } from '../../books/models/book.model'
 import { EstadoEntregado } from '../../books/enums/estadoEntregado.enum'
-import { inList } from '../../../shared/inList.validator'
+import { inList } from '../../../shared/validators/inList.validator'
 
 @Component({
 	selector: 'app-form',
 	standalone: true,
-	imports: [
-		ReactiveFormsModule
-	],
+	imports: [ReactiveFormsModule],
 	templateUrl: './form.component.html',
 	styleUrl: './form.component.css'
 })

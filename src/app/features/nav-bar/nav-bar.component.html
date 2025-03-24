@@ -1,5 +1,5 @@
 <nav
-	class="bg-white dark:bg-custom-nav fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600"
+	class="w-full bg-custom-nav fixed z-20 top-0 start-0 border-b border-gray-600"
 >
 	<div
 		class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
@@ -386,7 +386,7 @@
 			<button
 				*ngIf="!_authService.isAuthenticatedSignal()"
 				type="button"
-				class="text-white bg-custom-button-red font-medium rounded-lg text-sm px-4 py-2 text-center hover:scale-105"
+				class="text-white bg-custom-button-red-focus hover:bg-custom-button-red font-medium rounded-lg text-sm px-4 py-2 text-center"
 				[routerLink]="['/auth/login']"
 			>
 				Log In
@@ -431,28 +431,30 @@
 			id="navbar-sticky"
 		>
 			<ul
-				class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-custom-nav dark:border-gray-700"
+				class="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 bg-custom-nav"
 			>
 				<li class="grid place-items-center">
 					<a
-						href="#"
 						class="block py-2 px-3 text-white rounded-sm md:p-0 hover:text-custom-nav-items"
-						aria-current="page"
+						routerLink="home"
+						routerLinkActive="text-yellow-500"
 						>Home</a
 					>
 				</li>
 				<li class="grid place-items-center">
 					<a
 						class="block py-2 px-3 text-white rounded-sm md:p-0 hover:text-custom-nav-items"
-						routerLink="/books"
-						routerLinkActive="text-custom-buttons-yellow"
+						routerLink="books"
+						routerLinkActive="text-yellow-500"
 						>Books</a
 					>
 				</li>
 				<li class="grid place-items-center">
 					<a
 						class="block py-2 px-3 text-white rounded-sm md:p-0 hover:text-custom-nav-items"
-						>Dashboard</a
+						routerLink="profile"
+						routerLinkActive="text-yellow-500"
+						>Profile</a
 					>
 				</li>
 			</ul>

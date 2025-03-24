@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core'
 import { DatePipe, NgFor, NgIf } from '@angular/common'
 import { BooksService } from './services/books.service'
-import { BookFormComponent } from './form/book-form.component'
-import { IBook } from './model/book.model'
+import { BookFormComponent } from './pages/form/book-form.component'
+import { IBook } from './models/book.model'
 import { FormsModule } from '@angular/forms'
+import { CardComponent } from './components/card/card.component'
 
 @Component({
 	selector: 'app-books',
 	standalone: true,
-	imports: [BookFormComponent, NgIf, NgFor, DatePipe, FormsModule],
+	imports: [NgFor, FormsModule, CardComponent],
 	templateUrl: './books.component.html',
 	styleUrl: './books.component.css'
 })
@@ -36,19 +37,14 @@ export class BooksComponent implements OnInit {
 		this._bookService.getAll().subscribe({
 			next: (response: IBook[]) => {
 				this.books = response
+				console.log(response)
 			},
 			error: error => {}
 		})
 	}
 
-	toggleModalVisibility() {
-		this.selectedBook = undefined
-		this.isModalVisible = !this.isModalVisible
-	}
-
-	setSelectedBook(book: any) {
-		this.toggleModalVisibility()
-		this.selectedBook = book
+	trackById(index: number, book: IBook): number {
+		return book.id
 	}
 
 	confirmDelete(event: Event, bookId: number) {}

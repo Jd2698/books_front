@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable, Signal, signal, WritableSignal } from '@angular/core'
 import { Router } from '@angular/router'
+import { catchError, map, throwError } from 'rxjs'
 
 @Injectable({
 	providedIn: 'root'
@@ -11,15 +12,20 @@ export class AuthService {
 	private authenticatedSignal = signal(this.isAuthenticated())
 	isAuthenticatedSignal: Signal<boolean> = this.authenticatedSignal
 
-	constructor(private http: HttpClient, private router: Router) {
-	}
+	constructor(private http: HttpClient, private router: Router) {}
 
 	login(email: string, password: string) {
 		return this.http
 			.post<{ access_token: string }>(`${this.url}/login`, { email, password })
+			.pipe(
+				map(res => res),
+				catchError((error: HttpErrorResponse) => {
+					return throwError(() => error)
+				})
+			)
 			.subscribe((response: { access_token: string }) => {
 				localStorage.setItem('token', response.access_token)
-				
+
 				this.authenticatedSignal.set(true)
 				this.router.navigate(['/users'])
 			})
