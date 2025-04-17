@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
-import { Injectable, Signal, signal, WritableSignal } from '@angular/core'
+import { Injectable, Signal, signal } from '@angular/core'
 import { Router } from '@angular/router'
-import { catchError, map, throwError } from 'rxjs'
+import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs'
 
 @Injectable({
 	providedIn: 'root'
@@ -9,26 +9,50 @@ import { catchError, map, throwError } from 'rxjs'
 export class AuthService {
 	private url = 'http://localhost:3000/auth'
 
-	private authenticatedSignal = signal(this.isAuthenticated())
+	private authenticatedSignal = signal(false)
+
 	isAuthenticatedSignal: Signal<boolean> = this.authenticatedSignal
 
 	constructor(private http: HttpClient, private router: Router) {}
 
+	checkAuth(): Observable<{ authenticated: boolean }> {
+		return this.http.get<{ authenticated: boolean }>(`${this.url}/check`).pipe(
+			tap(() => {
+				this.authenticatedSignal.set(true)
+			}),
+			catchError(() => {
+				return of({ authenticated: false })
+			})
+		)
+	}
+
 	login(email: string, password: string) {
 		return this.http
-			.post<{ access_token: string }>(`${this.url}/login`, { email, password })
+			.post<void>(`${this.url}/login`, { email, password })
 			.pipe(
-				map(res => res),
+				tap(() => {
+					this.authenticatedSignal.set(true)
+					this.router.navigate(['/users'])
+				}),
 				catchError((error: HttpErrorResponse) => {
 					return throwError(() => error)
 				})
 			)
-			.subscribe((response: { access_token: string }) => {
-				localStorage.setItem('token', response.access_token)
+			.subscribe()
+	}
 
+	refreshToken(): Observable<void> {
+		return this.http.post<void>(`${this.url}/refresh`, {}, {
+			withCredentials: true
+		}).pipe(
+			tap(() => {
 				this.authenticatedSignal.set(true)
-				this.router.navigate(['/users'])
+			}),
+			catchError((error: HttpErrorResponse) => {
+				this.authenticatedSignal.set(false)
+				return throwError(() => error)
 			})
+		)
 	}
 
 	register(email: string, password: string) {
@@ -36,16 +60,18 @@ export class AuthService {
 	}
 
 	logout() {
-		localStorage.removeItem('token')
-		this.authenticatedSignal.set(false)
-		this.router.navigate(['/auth/login'])
-	}
-
-	isAuthenticated(): boolean {
-		return !!localStorage.getItem('token')
-	}
-
-	getToken(): string | null {
-		return localStorage.getItem('token')
+		this.http
+			.post<{ access_token: string }>(`${this.url}/logout`, {})
+			.pipe(
+				tap(() => {
+					this.authenticatedSignal.set(false)
+					this.router.navigate(['/auth/login'])
+				}),
+				catchError(err => {
+					console.error('Logout error:', err)
+					return of(null)
+				})
+			)
+			.subscribe()
 	}
 }
