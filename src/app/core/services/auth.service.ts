@@ -1,13 +1,14 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable, Signal, signal } from '@angular/core'
 import { Router } from '@angular/router'
-import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs'
+import { catchError, Observable, of, tap, throwError } from 'rxjs'
+import { environment } from '../../../environments/environment'
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AuthService {
-	private url = 'http://localhost:3000/auth'
+	private url = `${environment.apiUrl}/auth`
 
 	private authenticatedSignal = signal(false)
 
@@ -42,17 +43,23 @@ export class AuthService {
 	}
 
 	refreshToken(): Observable<void> {
-		return this.http.post<void>(`${this.url}/refresh`, {}, {
-			withCredentials: true
-		}).pipe(
-			tap(() => {
-				this.authenticatedSignal.set(true)
-			}),
-			catchError((error: HttpErrorResponse) => {
-				this.authenticatedSignal.set(false)
-				return throwError(() => error)
-			})
-		)
+		return this.http
+			.post<void>(
+				`${this.url}/refresh`,
+				{},
+				{
+					withCredentials: true
+				}
+			)
+			.pipe(
+				tap(() => {
+					this.authenticatedSignal.set(true)
+				}),
+				catchError((error: HttpErrorResponse) => {
+					this.authenticatedSignal.set(false)
+					return throwError(() => error)
+				})
+			)
 	}
 
 	register(email: string, password: string) {

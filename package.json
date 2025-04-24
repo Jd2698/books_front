@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@ngrx/store": "^18.1.1",
     "@types/jest": "^29.5.14",
     "flowbite": "^3.1.2",
     "jest": "^29.7.0",

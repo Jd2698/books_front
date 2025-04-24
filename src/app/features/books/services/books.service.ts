@@ -2,14 +2,14 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { catchError, map, Observable, throwError } from 'rxjs'
 import { IBook } from '../models/book.model'
-
+import { environment } from '../../../../environments/environment'
 @Injectable({
 	providedIn: 'root'
 })
 export class BooksService {
 	constructor(private httpClient: HttpClient) {}
 
-	urlPath: string = 'http://localhost:3000/books'
+	urlPath: string = `${environment.apiUrl}/books`
 
 	getAll(): Observable<any> {
 		return this.httpClient.get<any>(this.urlPath).pipe(

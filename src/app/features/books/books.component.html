@@ -1,6 +1,8 @@
 <section
 	class="max-w-screen-xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-16 p-10"
 >
-	<app-card *ngFor="let book of books; trackBy: trackById" [item]="book">
-	</app-card>
+	<app-card
+		*ngFor="let book of books$ | async; trackBy: trackById"
+		[item]="book"
+	/>
 </section>
