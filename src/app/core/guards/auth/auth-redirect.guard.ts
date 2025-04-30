@@ -6,7 +6,7 @@ export const authRedirectGuard: CanActivateFn = (route, state) => {
 	const _authService = inject(AuthService)
 	const _router = inject(Router)
 
-	if (_authService.isAuthenticatedSignal()) {
+	if (_authService.isAuthenticated()) {
 		_router.navigate(['books'])
 		return false
 	}

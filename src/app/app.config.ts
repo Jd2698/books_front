@@ -13,6 +13,7 @@ import { AuthService } from './core/services'
 import { lastValueFrom } from 'rxjs'
 import { provideState, provideStore } from '@ngrx/store'
 import { booksReducer } from './core/ngrx/reducers/book.reducer'
+import { provideOAuthClient } from 'angular-oauth2-oidc'
 
 export function initApp(authService: AuthService) {
 	return () => lastValueFrom(authService.checkAuth())
@@ -32,6 +33,7 @@ export const appConfig: ApplicationConfig = {
 			multi: true
 		},
 		provideStore(),
-		provideState('books', booksReducer)
+		provideState('books', booksReducer),
+		provideOAuthClient()
 	]
 }

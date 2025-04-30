@@ -1,8 +1,14 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable, Signal, signal } from '@angular/core'
 import { Router } from '@angular/router'
-import { catchError, Observable, of, tap, throwError } from 'rxjs'
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs'
 import { environment } from '../../../environments/environment'
+
+export interface IUserInfo {
+	sub: string
+	email: string
+	rol: string
+}
 
 @Injectable({
 	providedIn: 'root'
@@ -10,30 +16,55 @@ import { environment } from '../../../environments/environment'
 export class AuthService {
 	private url = `${environment.apiUrl}/auth`
 
-	private authenticatedSignal = signal(false)
+	private isAuthenticatedSignal = signal(false)
+	private userSignal = signal<{
+		sub: string
+		email: string
+		rol: string
+	} | null>(null)
 
-	isAuthenticatedSignal: Signal<boolean> = this.authenticatedSignal
+	constructor(
+		private readonly _http: HttpClient,
+		private readonly _router: Router
+	) {}
 
-	constructor(private http: HttpClient, private router: Router) {}
+	get user(): Signal<IUserInfo | null> {
+		return this.userSignal
+	}
+
+	get isAuthenticated(): Signal<boolean> {
+		return this.isAuthenticatedSignal
+	}
 
 	checkAuth(): Observable<{ authenticated: boolean }> {
-		return this.http.get<{ authenticated: boolean }>(`${this.url}/check`).pipe(
-			tap(() => {
-				this.authenticatedSignal.set(true)
+		return this._http.get<IUserInfo>(`${this.url}/check`).pipe(
+			tap(({ sub, email, rol }) => {
+				this.isAuthenticatedSignal.set(true)
+				this.userSignal.set({ sub, email, rol })
 			}),
+			map(() => ({ authenticated: true })),
 			catchError(() => {
 				return of({ authenticated: false })
 			})
 		)
 	}
 
-	login(email: string, password: string) {
-		return this.http
-			.post<void>(`${this.url}/login`, { email, password })
+	login(
+		email: string | null,
+		password: string | null,
+		withGoogle: boolean,
+		googleToken: string | null
+	) {
+		const url = withGoogle ? `${this.url}/google` : `${this.url}/login`
+		const body = withGoogle ? { tokenId: googleToken } : { email, password }
+
+		this._http
+			.post<IUserInfo>(url, body)
 			.pipe(
-				tap(() => {
-					this.authenticatedSignal.set(true)
-					this.router.navigate(['/users'])
+				tap(({ sub, email, rol }) => {
+					this.isAuthenticatedSignal.set(true)
+					this.userSignal.set({ sub, email, rol })
+					this._router.navigate(['/users'])
 				}),
 				catchError((error: HttpErrorResponse) => {
 					return throwError(() => error)
@@ -43,7 +74,7 @@ export class AuthService {
 	}
 
 	refreshToken(): Observable<void> {
-		return this.http
+		return this._http
 			.post<void>(
 				`${this.url}/refresh`,
 				{},
@@ -53,26 +84,27 @@ export class AuthService {
 			)
 			.pipe(
 				tap(() => {
-					this.authenticatedSignal.set(true)
+					this.isAuthenticatedSignal.set(true)
 				}),
 				catchError((error: HttpErrorResponse) => {
-					this.authenticatedSignal.set(false)
+					this.isAuthenticatedSignal.set(false)
 					return throwError(() => error)
 				})
 			)
 	}
 
 	register(email: string, password: string) {
-		return this.http.post(`${this.url}/register`, { email, password })
+		return this._http.post(`${this.url}/register`, { email, password })
 	}
 
 	logout() {
-		this.http
-			.post<{ access_token: string }>(`${this.url}/logout`, {})
+		this._http
+			.post(`${this.url}/logout`, {})
 			.pipe(
 				tap(() => {
-					this.authenticatedSignal.set(false)
-					this.router.navigate(['/auth/login'])
+					this.isAuthenticatedSignal.set(false)
+					this.userSignal.set(null)
+					this._router.navigate(['/auth/login'])
 				}),
 				catchError(err => {
 					console.error('Logout error:', err)

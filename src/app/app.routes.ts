@@ -5,9 +5,15 @@ import { LoansComponent } from './features/loans/loans.component'
 import { LoginComponent } from './features/auth/login/login.component'
 import { RegisterComponent } from './features/auth/register/register.component'
 import { authGuard, authRedirectGuard } from './core/guards'
+import { roleGuard } from './core/guards/auth/role.guard'
 
 export const routes: Routes = [
-	{ path: 'users', component: UsersComponent, canActivate: [authGuard] },
+	{
+		path: 'users',
+		component: UsersComponent,
+		canActivate: [roleGuard],
+		data: { requiredRole: 'admin' }
+	},
 	{
 		path: 'auth/login',
 		component: LoginComponent,

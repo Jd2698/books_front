@@ -1,4 +1,11 @@
 <section class="h-full grid place-items-center">
+	<button
+		(click)="loginWithGoogle()"
+		class="text-white bg-custom-buttons-yellow-focus hover:bg-custom-buttons-yellow focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+	>
+		Sig in with google
+	</button>
+
 	<form
 		class="w-96 shadow-md p-4 rounded-md bg-white"
 		[formGroup]="formGroup"

@@ -384,7 +384,7 @@
 		</a>
 		<div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
 			<button
-				*ngIf="!_authService.isAuthenticatedSignal()"
+				*ngIf="!_authService.isAuthenticated()"
 				type="button"
 				class="text-white bg-custom-button-red-focus hover:bg-custom-button-red font-medium rounded-lg text-sm px-4 py-2 text-center"
 				[routerLink]="['/auth/login']"
@@ -393,7 +393,7 @@
 			</button>
 
 			<button
-				*ngIf="_authService.isAuthenticatedSignal()"
+				*ngIf="_authService.isAuthenticated()"
 				(click)="logout()"
 				type="button"
 				class="text-white bg-custom-button-red-focus hover:bg-custom-button-red font-medium rounded-lg text-sm px-4 py-2 text-center"
@@ -449,7 +449,10 @@
 						>Books</a
 					>
 				</li>
-				<li class="grid place-items-center">
+				<li
+					*ngIf="isAdmin()"
+					class="grid place-items-center"
+				>
 					<a
 						class="block py-2 px-3 text-white rounded-sm md:p-0 hover:text-custom-nav-items"
 						routerLink="users"

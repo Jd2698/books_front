@@ -23,6 +23,7 @@
     "@angular/router": "^18.2.0",
     "@ngrx/store": "^18.1.1",
     "@types/jest": "^29.5.14",
+    "angular-oauth2-oidc": "^18.0.0",
     "flowbite": "^3.1.2",
     "jest": "^29.7.0",
     "jest-preset-angular": "^14.4.1",

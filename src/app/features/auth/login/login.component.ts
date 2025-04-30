@@ -6,6 +6,7 @@ import {
 	ReactiveFormsModule,
 	Validators
 } from '@angular/forms'
+import { OauthServiceService } from '../../../core/services/oauth-service.service'
 
 @Component({
 	selector: 'app-login',
@@ -18,15 +19,22 @@ export class LoginComponent {
 	private _authService = inject(AuthService)
 	formGroup: FormGroup
 
-	constructor(private formBuilder: FormBuilder) {
+	constructor(
+		private formBuilder: FormBuilder,
+		private readonly _oauth: OauthServiceService
+	) {
 		this.formGroup = formBuilder.group({
 			email: ['', [Validators.required, Validators.minLength(3)]],
 			password: ['', [Validators.required, Validators.minLength(3)]]
 		})
 	}
 
+	loginWithGoogle() {
+		this._oauth.login()
+	}
+
 	onSubmit() {
 		const { email, password } = this.formGroup.value
-		this._authService.login(email, password)
+		this._authService.login(email, password, false, null)
 	}
 }

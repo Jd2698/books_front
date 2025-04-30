@@ -18,7 +18,7 @@ export class CardComponent {
 	_router = inject(Router)
 
 	onReserve(book: IBook): void {
-		if (!this._authService.isAuthenticatedSignal()) {
+		if (!this._authService.isAuthenticated()) {
 			this._router.navigate(['auth/login'])
 			return
 		}

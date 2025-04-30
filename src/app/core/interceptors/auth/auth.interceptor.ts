@@ -2,24 +2,25 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http'
 import { inject } from '@angular/core'
 import { catchError, switchMap, throwError } from 'rxjs'
 import { AuthService } from '../../services'
+import { Router } from '@angular/router'
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-	const authService = inject(AuthService)
+	const _authService = inject(AuthService)
+	const _router = inject(Router)
 
-	const isAuthUrl =
-		req.url.includes('/login') ||
-		req.url.includes('/register') ||
-		req.url.includes('/refresh') ||
-		req.url.includes('/logout')
+	const skipURLs = ['/login', '/register', '/logout', '/refresh']
 
-	if (isAuthUrl) {
+	/**
+	 * Not apply catchError to previous routes
+	 */
+	if (skipURLs.some(url => req.url.includes(url))) {
 		return next(req)
 	}
 
 	return next(req).pipe(
 		catchError((error: HttpErrorResponse) => {
 			if (error.status === 401) {
-				return authService.refreshToken().pipe(
+				return _authService.refreshToken().pipe(
 					switchMap(() => {
 						return next(req)
 					}),
