@@ -6,8 +6,13 @@ import { LoginComponent } from './features/auth/login/login.component'
 import { RegisterComponent } from './features/auth/register/register.component'
 import { authGuard, authRedirectGuard } from './core/guards'
 import { roleGuard } from './core/guards/auth/role.guard'
+import { HomeComponent } from './features/home/home.component'
 
 export const routes: Routes = [
+	{
+		path: 'home',
+		component: HomeComponent
+	},
 	{
 		path: 'users',
 		component: UsersComponent,
@@ -26,5 +31,5 @@ export const routes: Routes = [
 	},
 	{ path: 'books', component: BooksComponent },
 	{ path: 'loans', component: LoansComponent, canActivate: [authGuard] },
-	{ path: '**', redirectTo: 'books', pathMatch: 'full' }
+	{ path: '**', redirectTo: 'home', pathMatch: 'full' }
 ]
